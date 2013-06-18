@@ -16,14 +16,14 @@ module Roadie
       @routes << route
     end
 
+    def routes
+      @routes + [default_route]
+    end
+
     private
 
     def default_route
       lambda { |env| [404, {}, []] }
-    end
-
-    def routes
-      @routes + [default_route]
     end
   end
 
