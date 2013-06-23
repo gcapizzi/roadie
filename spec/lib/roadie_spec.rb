@@ -5,52 +5,61 @@ module Roadie
   describe Router do
     context 'when no route is defined' do
       let(:env) { double('env') }
-      let(:not_found_resp) { [404, {}, []] }
       let(:router) { Router.new }
 
       it 'returns a 404 by default' do
-        expect(router.call(env)).to eq(not_found_resp)
+        expect(router.call(env)[0].to_i).to eq(404)
       end
     end
 
     context 'when some routes are defined' do
-      let(:first_route) { double(Route, call: nil) }
       let(:ok_resp) { [200, {}, ['ok']] }
+      let(:not_found_resp) { [404, {}, []] }
       let(:ok_route) { double(Route, call: ok_resp) }
-      let(:last_route) { double(Route, call: nil) }
-      let(:router) { Router.new(first_route, ok_route, last_route) }
+      let(:other_ok_route) { double(Route, call: ok_resp) }
+      let(:not_found_route) { double(Route, call: not_found_resp) }
       let(:env) { double('env') }
 
-      it 'tries all routes one by one, stops at the first matching' do
-        last_route.should_not_receive(:call)
-        expect(router.call(env)).to eq(ok_resp)
+      context 'when some route matches' do
+        let(:router) { Router.new(not_found_route, ok_route, not_found_route, ok_route) }
+
+        it 'tries all routes one by one, stops at the first matching' do
+          other_ok_route.should_not_receive(:call)
+          expect(router.call(env)).to eq(ok_resp)
+        end
+      end
+
+      context 'when no route matches' do
+        let(:router) { Router.new(not_found_route, not_found_route, not_found_route) }
+
+        it 'returns a 404 Not Found if not route matches' do
+          expect(router.call(env)[0].to_i).to eq(404)
+        end
       end
     end
   end
 
   describe Route do
-    describe '#call' do
-      let(:ok_resp) { [200, {}, ['ok']] }
-      let(:handler) { double(call: ok_resp) }
-      let(:route) { Route.new(:foo, matcher, handler) }
-      let(:env) { double('env') }
+    let(:ok_resp) { [200, {}, ['ok']] }
+    let(:handler) { double(call: ok_resp) }
+    let(:route) { Route.new(:foo, matcher, handler) }
+    let(:env) { double('env') }
 
-      context 'the matcher matches' do
-        let(:params) { { 'foo' => 'bar' } }
-        let(:matcher) { double(matches?: true, params: params) }
+    context 'when the matcher matches' do
+      let(:params) { { 'foo' => 'bar' } }
+      let(:matcher) { double(matches?: true, params: params) }
 
-        it 'sets params and returns the handler response' do
-          env.should_receive(:[]=).with('roadie.params', params)
-          expect(route.call(env)).to eq(ok_resp)
-        end
+      it 'sets params and returns the handler response' do
+        env.should_receive(:[]=).with('roadie.params', params)
+        expect(route.call(env)).to eq(ok_resp)
       end
+    end
 
-      context 'the matcher doesn\'t match' do
-        let(:matcher) { double(matches?: false) }
+    context 'when the matcher doesn\'t match' do
+      let(:matcher) { double(matches?: false) }
 
-        it 'returns nil' do
-          expect(route.call(env)).to be_nil
-        end
+      it 'returns a 404 Not Found' do
+        expect(route.call(env)[0].to_i).to eq(404)
       end
     end
   end

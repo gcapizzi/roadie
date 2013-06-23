@@ -1,4 +1,5 @@
 module Roadie
+  NotFound = [404, { 'Content-Type' => 'text/plain' }, []]
 
   class Router
     def initialize(*routes)
@@ -8,8 +9,9 @@ module Roadie
     def call(env)
       routes.each do |route|
         resp = route.call(env)
-        return resp if resp
+        return resp unless resp[0].to_i == 404
       end
+      NotFound
     end
 
     def <<(route)
@@ -23,7 +25,7 @@ module Roadie
     private
 
     def default_route
-      lambda { |env| [404, {}, []] }
+      lambda { |env| NotFound }
     end
   end
 
@@ -39,8 +41,10 @@ module Roadie
     def call(env)
       if @matcher.matches?(env)
         env['roadie.params'] = @matcher.params(env)
-        @handler.call(env)
+        return @handler.call(env)
       end
+
+      NotFound
     end
   end
 
