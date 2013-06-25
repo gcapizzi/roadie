@@ -9,7 +9,7 @@ module Roadie
     def call(env)
       routes.each do |route|
         resp = route.call(env)
-        return resp unless resp[0].to_i == 404
+        return resp unless not_found?(resp)
       end
       NotFound
     end
@@ -26,6 +26,10 @@ module Roadie
 
     def default_route
       lambda { |env| NotFound }
+    end
+
+    def not_found?(response)
+      response[0].to_i == 404
     end
   end
 
