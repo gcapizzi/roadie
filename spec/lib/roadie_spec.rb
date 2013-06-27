@@ -41,7 +41,7 @@ module Roadie
 
   describe Route do
     let(:ok_resp) { [200, {}, ['ok']] }
-    let(:handler) { double(call: ok_resp) }
+    let(:handler) { double('handler') }
     let(:route) { Route.new(:foo, matcher, handler) }
     let(:env) { double('env') }
 
@@ -50,6 +50,7 @@ module Roadie
       let(:matcher) { double(matches?: true, params: params) }
 
       it 'sets params and returns the handler response' do
+        handler.stub(:call).with(env, params).and_return(ok_resp)
         env.should_receive(:[]=).with('roadie.params', params)
         expect(route.call(env)).to eq(ok_resp)
       end

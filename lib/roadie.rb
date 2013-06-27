@@ -44,8 +44,9 @@ module Roadie
 
     def call(env)
       if @matcher.matches?(env)
-        env['roadie.params'] = @matcher.params(env)
-        return @handler.call(env)
+        params = @matcher.params(env)
+        env['roadie.params'] = params
+        return @handler.call(env, params)
       end
 
       NotFound
