@@ -4,4 +4,4 @@ require 'bundler/setup'
 # Setup SimpleCov
 
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start if ENV['COVERAGE']

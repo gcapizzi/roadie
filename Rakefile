@@ -9,4 +9,9 @@ task :mutant do
   Mutant::CLI.run(%w'-I lib -r roadie --rspec-full ::Roadie')
 end
 
+task :coverage do
+  ENV['COVERAGE'] = 'true'
+  Rake::Task['spec'].execute
+end
+
 task :default => :spec
