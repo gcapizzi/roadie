@@ -13,7 +13,7 @@ module Roadie
     let(:env) { double('env') }
 
     context 'when a route matches' do
-      let(:router) { Router.new(not_matching_route, matching_route, not_matching_route, other_matching_route) }
+      let(:router) { Router.new([not_matching_route, matching_route, not_matching_route, other_matching_route]) }
 
       it 'tries all routes one by one, stops at the first matching' do
         other_matching_route.should_not_receive(:call)
@@ -21,7 +21,7 @@ module Roadie
       end
 
       context 'when the matching route replies with X-Cascade => pass' do
-        let(:router) { Router.new(not_matching_route, matching_passing_route, not_matching_route, matching_route) }
+        let(:router) { Router.new([not_matching_route, matching_passing_route, not_matching_route, matching_route]) }
 
         it 'keeps trying other routes' do
           expect(router.call(env)).to eq(ok_resp)
@@ -30,7 +30,7 @@ module Roadie
     end
 
     context 'when no route matches' do
-      let(:router) { Router.new(not_matching_route, not_matching_route, not_matching_route) }
+      let(:router) { Router.new([not_matching_route, not_matching_route, not_matching_route]) }
 
       it 'returns a 404 Not Found with X-Cascade => pass' do
         resp = router.call(env)

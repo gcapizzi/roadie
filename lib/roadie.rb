@@ -2,8 +2,8 @@ module Roadie
   NOT_FOUND = [404, { 'Content-Type' => 'text/plain', 'X-Cascade' => 'pass' }, ['Not Found']]
 
   class Router
-    def initialize(*routes)
-      @routes = routes.flatten
+    def initialize(routes = [])
+      @routes = routes
     end
 
     def call(env)
