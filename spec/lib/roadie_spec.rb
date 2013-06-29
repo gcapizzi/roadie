@@ -53,8 +53,13 @@ module Roadie
   describe Route do
     let(:ok_resp) { [200, {}, ['ok']] }
     let(:handler) { double('handler', call: ok_resp) }
+    let(:matcher) { double }
     let(:route) { Route.new(:foo, matcher, handler) }
     let(:env) { double('env') }
+
+    it 'has a name' do
+      expect(route.name).to eq(:foo)
+    end
 
     context 'when the matcher matches' do
       let(:params) { { 'foo' => 'bar' } }
