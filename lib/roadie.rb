@@ -7,26 +7,22 @@ module Roadie
     end
 
     def call(env)
-      routes.each do |route|
+      @routes.each do |route|
         resp = route.call(env)
         return resp unless pass?(resp)
       end
 
-      NOT_FOUND
+      default_route.call(env)
     end
 
     def <<(route)
       @routes << route
     end
 
-    def routes
-      @routes + [default_route]
-    end
-
     private
 
     def default_route
-      lambda { |env| NOT_FOUND }
+      proc { NOT_FOUND }
     end
 
     def pass?(response)
