@@ -1,5 +1,5 @@
 module Roadie
-  NotFound = [404, { 'Content-Type' => 'text/plain', 'X-Cascade' => 'pass' }, ['Not Found']]
+  NOT_FOUND = [404, { 'Content-Type' => 'text/plain', 'X-Cascade' => 'pass' }, ['Not Found']]
 
   class Router
     def initialize(*routes)
@@ -12,7 +12,7 @@ module Roadie
         return resp unless pass?(resp)
       end
 
-      NotFound
+      NOT_FOUND
     end
 
     def <<(route)
@@ -26,7 +26,7 @@ module Roadie
     private
 
     def default_route
-      lambda { |env| NotFound }
+      lambda { |env| NOT_FOUND }
     end
 
     def pass?(response)
@@ -52,7 +52,7 @@ module Roadie
         return @handler.call(env, params)
       end
 
-      NotFound
+      NOT_FOUND
     end
   end
 
