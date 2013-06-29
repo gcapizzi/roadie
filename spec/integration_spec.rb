@@ -7,12 +7,12 @@ describe Roadie::Router do
 
   let(:app) do
     router = Roadie::Router.new
-    router << Roadie::Route.new(:foo, Roadie::Matcher.new('GET', '/foo'), lambda { |env, params = {}| [200, {}, ['foo']] })
-    router << Roadie::Route.new(:woot, Roadie::Matcher.new('POST', %r{/w(o+)t}), lambda { |env, params = {}| [200, {}, ['woot']] })
-    router << Roadie::Route.new(:p_verb, Roadie::Matcher.new(/P(.+)/, '/p-verb'), lambda { |env, params = {}| [200, {}, ['p-verb']] })
+    router << Roadie::Route.new(:foo, Roadie::Matcher.new('GET', '/foo'), lambda { |env| [200, {}, ['foo']] })
+    router << Roadie::Route.new(:woot, Roadie::Matcher.new('POST', %r{/w(o+)t}), lambda { |env| [200, {}, ['woot']] })
+    router << Roadie::Route.new(:p_verb, Roadie::Matcher.new(/P(.+)/, '/p-verb'), lambda { |env| [200, {}, ['p-verb']] })
 
-    router << Roadie::Route.new(:resource, Roadie::Matcher.new(/(?<verb>.+)/, %r{/resource/(?<id>.+)/?}), lambda { |env, params = {}|
-      [200, {}, ["ID: #{params['id']}, Verb: #{params['verb']}"]]
+    router << Roadie::Route.new(:resource, Roadie::Matcher.new(/(?<verb>.+)/, %r{/resource/(?<id>.+)/?}), lambda { |env|
+      [200, {}, ["ID: #{env['rack.routing_args']['id']}, Verb: #{env['rack.routing_args']['verb']}"]]
     })
 
     router
