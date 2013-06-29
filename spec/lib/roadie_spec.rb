@@ -3,38 +3,39 @@ require './lib/roadie'
 module Roadie
 
   describe Router do
-    context 'when no route is defined' do
-      let(:env) { double('env') }
-      let(:router) { Router.new }
+    let(:ok_resp) { [200, {}, ['ok']] }
+    let(:pass_resp) { [404, { 'X-Cascade' => 'pass' }, []] }
+    let(:ok_pass_resp) { [200, { 'X-Cascade' => 'pass' }, ['ok and pass']] }
+    let(:matching_route) { double(Route, call: ok_resp) }
+    let(:other_matching_route) { double(Route, call: ok_resp) }
+    let(:not_matching_route) { double(Route, call: pass_resp) }
+    let(:matching_passing_route) { double(Route, call: ok_pass_resp) }
+    let(:env) { double('env') }
 
-      it 'returns a 404 by default' do
-        expect(router.call(env)[0].to_i).to eq(404)
+    context 'when a route matches' do
+      let(:router) { Router.new(not_matching_route, matching_route, not_matching_route, other_matching_route) }
+
+      it 'tries all routes one by one, stops at the first matching' do
+        other_matching_route.should_not_receive(:call)
+        expect(router.call(env)).to eq(ok_resp)
       end
-    end
 
-    context 'when some routes are defined' do
-      let(:ok_resp) { [200, {}, ['ok']] }
-      let(:not_found_resp) { [404, {}, []] }
-      let(:ok_route) { double(Route, call: ok_resp) }
-      let(:other_ok_route) { double(Route, call: ok_resp) }
-      let(:not_found_route) { double(Route, call: not_found_resp) }
-      let(:env) { double('env') }
+      context 'when the matching route replies with X-Cascade => pass' do
+        let(:router) { Router.new(not_matching_route, matching_passing_route, not_matching_route, matching_route) }
 
-      context 'when some route matches' do
-        let(:router) { Router.new(not_found_route, ok_route, not_found_route, ok_route) }
-
-        it 'tries all routes one by one, stops at the first matching' do
-          other_ok_route.should_not_receive(:call)
+        it 'keeps trying other routes' do
           expect(router.call(env)).to eq(ok_resp)
         end
       end
+    end
 
-      context 'when no route matches' do
-        let(:router) { Router.new(not_found_route, not_found_route, not_found_route) }
+    context 'when no route matches' do
+      let(:router) { Router.new(not_matching_route, not_matching_route, not_matching_route) }
 
-        it 'returns a 404 Not Found if not route matches' do
-          expect(router.call(env)[0].to_i).to eq(404)
-        end
+      it 'returns a 404 Not Found with X-Cascade => pass' do
+        resp = router.call(env)
+        expect(resp[0].to_i).to eq(404)
+        expect(resp[1]['X-Cascade']).to eq('pass')
       end
     end
   end
@@ -59,8 +60,10 @@ module Roadie
     context 'when the matcher doesn\'t match' do
       let(:matcher) { double(matches?: false) }
 
-      it 'returns a 404 Not Found' do
-        expect(route.call(env)[0].to_i).to eq(404)
+      it 'returns a 404 Not Found with X-Cascade => pass' do
+        resp = route.call(env)
+        expect(resp[0].to_i).to eq(404)
+        expect(resp[1]['X-Cascade']).to eq('pass')
       end
     end
   end
