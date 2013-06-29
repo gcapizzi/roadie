@@ -8,4 +8,5 @@ group :test do
   gem 'guard-rspec'
   gem 'simplecov'
   gem 'debugger'
+  gem 'mutant'
 end
