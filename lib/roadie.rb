@@ -37,6 +37,8 @@ module Roadie
   class Route
     attr_reader :name
 
+    PARAMETERS_KEY = 'rack.routing_args'
+
     def initialize(name, matcher, handler)
       @name = name
       @matcher = matcher
@@ -46,7 +48,7 @@ module Roadie
     def call(env)
       if @matcher.matches?(env)
         params = @matcher.params(env)
-        env['roadie.params'] = params
+        env[PARAMETERS_KEY] = params
         return @handler.call(env, params)
       end
 

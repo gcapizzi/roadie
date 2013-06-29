@@ -52,7 +52,7 @@ module Roadie
 
       it 'sets params and returns the handler response' do
         handler.stub(:call).with(env, params).and_return(ok_resp)
-        env.should_receive(:[]=).with('roadie.params', params)
+        env.should_receive(:[]=).with('rack.routing_args', params)
         expect(route.call(env)).to eq(ok_resp)
       end
     end
