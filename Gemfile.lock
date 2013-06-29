@@ -33,6 +33,7 @@ GEM
       rspec (~> 2.13)
     ice_nine (0.7.0)
     inflecto (0.0.2)
+    json (1.8.0)
     listen (1.2.0)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -92,6 +93,7 @@ DEPENDENCIES
   debugger
   guard
   guard-rspec
+  json
   mutant
   rack-test
   rake
