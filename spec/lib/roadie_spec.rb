@@ -5,12 +5,9 @@ module Roadie
 
   describe Router do
     let(:ok_resp) { [200, {}, ['ok']] }
-    let(:pass_resp) { [404, { 'X-Cascade' => 'pass' }, []] }
-    let(:ok_pass_resp) { [200, { 'X-Cascade' => 'pass' }, ['ok and pass']] }
     let(:matching_route) { double(Route, call: ok_resp) }
-    let(:other_matching_route) { double(Route, call: ok_resp) }
+    let(:pass_resp) { [404, { 'X-Cascade' => 'pass' }, []] }
     let(:not_matching_route) { double(Route, call: pass_resp) }
-    let(:matching_passing_route) { double(Route, call: ok_pass_resp) }
     let(:env) { double('env') }
 
     context 'when no route is defined' do
@@ -24,6 +21,7 @@ module Roadie
     end
 
     context 'when a route matches' do
+      let(:other_matching_route) { double(Route, call: ok_resp) }
       let(:router) { Router.new([not_matching_route, matching_route, not_matching_route, other_matching_route]) }
 
       it 'tries all routes one by one, stops at the first matching' do
@@ -32,6 +30,8 @@ module Roadie
       end
 
       context 'when the matching route replies with X-Cascade => pass' do
+        let(:ok_pass_resp) { [200, { 'X-Cascade' => 'pass' }, ['ok and pass']] }
+        let(:matching_passing_route) { double(Route, call: ok_pass_resp) }
         let(:router) { Router.new([not_matching_route, matching_passing_route, not_matching_route, matching_route]) }
 
         it 'keeps trying other routes' do
