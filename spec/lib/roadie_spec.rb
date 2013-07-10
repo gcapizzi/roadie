@@ -24,7 +24,7 @@ module Roadie
       let(:other_matching_route) { double(Route, call: ok_resp) }
       let(:router) { Router.new([not_matching_route, matching_route, not_matching_route, other_matching_route]) }
 
-      it 'tries all routes one by one, stops at the first matching' do
+      it 'stops trying and returns the route response' do
         other_matching_route.should_not_receive(:call)
         expect(router.call(env)).to eq(ok_resp)
       end
