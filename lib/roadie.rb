@@ -53,8 +53,8 @@ module Roadie
 
   class Matcher
     def initialize(verb, path)
-      @verb = Regexp.new(verb)
-      @path = Regexp.new(path)
+      @verb = regex(verb)
+      @path = regex(path)
     end
 
     def matches?(env)
@@ -68,6 +68,14 @@ module Roadie
     end
 
     private
+
+    def regex(pattern)
+      if pattern.is_a? String
+        Regexp.compile("\\A#{Regexp.escape(pattern)}\\Z")
+      else
+        pattern
+      end
+    end
 
     def extract_params(regex, string)
       match = regex.match(string)
