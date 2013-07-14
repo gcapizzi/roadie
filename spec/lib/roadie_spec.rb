@@ -8,7 +8,7 @@ module Roadie
     let(:matching_route) { double(Route, call: ok_resp) }
     let(:pass_resp) { [404, { 'X-Cascade' => 'pass' }, []] }
     let(:not_matching_route) { double(Route, call: pass_resp) }
-    let(:env) { double('env') }
+    let(:env) { {} }
 
     context 'when no route is defined' do
       let(:router) { Router.new }
@@ -56,18 +56,18 @@ module Roadie
     let(:handler) { double('handler', call: ok_resp) }
     let(:matcher) { double }
     let(:route) { Route.new(:foo, matcher, handler) }
-    let(:env) { double('env') }
+    let(:env) { {} }
 
     it 'has a name' do
       expect(route.name).to eq(:foo)
     end
 
     context 'when the matcher matches' do
-      let(:params) { { 'foo' => 'bar' } }
-      let(:matcher) { double(matches?: true, params: params) }
+      let(:url_params) { { 'foo' => 'bar' } }
+      let(:matcher) { double(matches?: true, params: url_params) }
 
       it 'sets params and returns the handler response' do
-        env.should_receive(:[]=).with('rack.routing_args', params)
+        handler.should_receive(:call).with('rack.routing_args' => url_params)
         expect(route.call(env)).to eq(ok_resp)
       end
     end
@@ -85,7 +85,7 @@ module Roadie
 
   describe Matcher do
     describe '#matches?' do
-      context 'with a string path and a string verb' do
+      context 'with strings' do
         let(:matcher) { Matcher.new('POST', '/foo') }
 
         it 'matches a request' do
@@ -95,19 +95,7 @@ module Roadie
         end
       end
 
-      context 'with a regex path and a string verb' do
-        let(:matcher) { Matcher.new('POST', %r{/foo(/(.+))?}) }
-
-        it 'matches a request' do
-          expect(matcher.matches?(req('POST', '/foo'    ))).to be_true
-          expect(matcher.matches?(req('POST', '/foo/'   ))).to be_true
-          expect(matcher.matches?(req('POST', '/foo/bar'))).to be_true
-          expect(matcher.matches?(req('GET',  '/foo'    ))).to be_false
-          expect(matcher.matches?(req('POST', '/bar'    ))).to be_false
-        end
-      end
-
-      context 'with a regex path and a regex verb' do
+      context 'with regexes' do
         let(:matcher) { Matcher.new(/.+/, %r{/foo(/(.+))?}) }
 
         it 'matches a request' do
