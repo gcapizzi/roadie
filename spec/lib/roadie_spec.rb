@@ -96,21 +96,21 @@ module Roadie
       end
 
       context 'with regexes' do
-        let(:matcher) { Matcher.new(/.+/, %r{/foo(/(.+))?}) }
+        let(:matcher) { Matcher.new('GET', %r{/foo(/(.+))?}) }
 
         it 'matches a request' do
           expect(matcher.matches?(req('GET',  '/foo' ))).to be_true
-          expect(matcher.matches?(req('POST', '/foo/'))).to be_true
+          expect(matcher.matches?(req('POST', '/foo/'))).to be_false
           expect(matcher.matches?(req('',     '/foo/'))).to be_false
         end
       end
     end
 
     describe '#params' do
-      let(:matcher) { Matcher.new(/(?<verb>.+)/, %r{/resource/(?<id>.+)/?}) }
+      let(:matcher) { Matcher.new('GET', %r{/resource/(?<id>.+)/?}) }
 
       it 'returns a hash of captures' do
-        expect(matcher.params(req('GET', '/resource/123'))).to eq('verb' => 'GET', 'id' => '123')
+        expect(matcher.params(req('GET', '/resource/123'))).to eq('id' => '123')
       end
     end
 

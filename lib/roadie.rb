@@ -53,18 +53,16 @@ module Roadie
 
   class Matcher
     def initialize(verb, path)
-      @verb = regex(verb)
+      @verb = String(verb)
       @path = regex(path)
     end
 
     def matches?(env)
-      @verb =~ env['REQUEST_METHOD'] && @path =~ env['PATH_INFO']
+      @verb == env['REQUEST_METHOD'] && @path =~ env['PATH_INFO']
     end
 
     def params(env)
-      verb_params = extract_params(@verb, env['REQUEST_METHOD'])
-      path_params = extract_params(@path, env['PATH_INFO'])
-      verb_params.merge(path_params)
+      extract_params(@path, env['PATH_INFO'])
     end
 
     private
