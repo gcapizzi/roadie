@@ -9,10 +9,10 @@ module Roadie
 
     let(:app) do
       router = Router.new
-      router << Route.new(:foo, Matcher.new('GET', '/foo'), lambda { |env| [200, {}, ['foo']] })
-      router << Route.new(:woot, Matcher.new('POST', %r{/w(o+)t}), lambda { |env| [200, {}, ['woot']] })
+      router << Route.new(:foo, Matcher.new('GET', '/foo'), ->(env) { [200, {}, ['foo']] })
+      router << Route.new(:woot, Matcher.new('POST', %r{/w(o+)t}), ->(env) { [200, {}, ['woot']] })
 
-      router << Route.new(:resource, Matcher.new('PUT', %r{/resource/(?<id>.+)/?}), lambda { |env|
+      router << Route.new(:resource, Matcher.new('PUT', %r{/resource/(?<id>.+)/?}), ->(env) {
         [200, {}, [env['rack.routing_args']['id']]]
       })
 
