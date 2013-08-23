@@ -62,7 +62,8 @@ module Roadie
     end
 
     def params(env)
-      extract_params(@path, env['PATH_INFO'])
+      match = @path.match(env['PATH_INFO'])
+      Hash[match.names.zip(match.captures)]
     end
 
     private
@@ -73,11 +74,6 @@ module Roadie
       else
         pattern
       end
-    end
-
-    def extract_params(regex, string)
-      match = regex.match(string)
-      Hash[match.names.zip(match.captures)]
     end
   end
 end
