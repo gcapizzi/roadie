@@ -6,15 +6,12 @@ module Roadie
   describe Router do
     let(:ok_resp) { [200, {}, ['ok']] }
     let(:matching_route) { double(Route, call: ok_resp) }
-    let(:pass_resp) { [404, { 'X-Cascade' => 'pass' }, []] }
-    let(:not_matching_route) { double(Route, call: pass_resp) }
+    let(:not_matching_route) { double(Route, call: [404, { 'X-Cascade' => 'pass' }, []]) }
     let(:env) { {} }
 
     context 'when no route is defined' do
-      let(:router) { Router.new }
-
       it 'returns a 404 Not Found with X-Cascade => pass' do
-        resp = router.call(env)
+        resp = subject.call(env)
         expect(resp[0].to_i).to eq(404)
         expect(resp[1]['X-Cascade']).to eq('pass')
       end
@@ -22,29 +19,37 @@ module Roadie
 
     context 'when a route matches' do
       let(:other_matching_route) { double(Route, call: ok_resp) }
-      let(:router) { Router.new([not_matching_route, matching_route, not_matching_route, other_matching_route]) }
+
+      before do
+        subject << not_matching_route << matching_route << not_matching_route << other_matching_route
+      end
 
       it 'stops trying and returns the route response' do
         other_matching_route.should_not_receive(:call)
-        expect(router.call(env)).to eq(ok_resp)
+        expect(subject.call(env)).to eq(ok_resp)
       end
 
       context 'when the matching route replies with X-Cascade => pass' do
         let(:ok_pass_resp) { [200, { 'X-Cascade' => 'pass' }, ['ok and pass']] }
         let(:matching_passing_route) { double(Route, call: ok_pass_resp) }
-        let(:router) { Router.new([not_matching_route, matching_passing_route, not_matching_route, matching_route]) }
+
+        before do
+          subject << not_matching_route << matching_passing_route << not_matching_route << matching_route
+        end
 
         it 'keeps trying other routes' do
-          expect(router.call(env)).to eq(ok_resp)
+          expect(subject.call(env)).to eq(ok_resp)
         end
       end
     end
 
     context 'when no route matches' do
-      let(:router) { Router.new([not_matching_route, not_matching_route, not_matching_route]) }
+      before do
+        3.times { subject << not_matching_route }
+      end
 
       it 'returns a 404 Not Found with X-Cascade => pass' do
-        resp = router.call(env)
+        resp = subject.call(env)
         expect(resp[0].to_i).to eq(404)
         expect(resp[1]['X-Cascade']).to eq('pass')
       end

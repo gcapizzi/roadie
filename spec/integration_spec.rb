@@ -8,15 +8,19 @@ module Roadie
     include Rack::Test::Methods
 
     let(:app) do
-      router = Router.new
-      router << Route.new(:foo, Matcher.new('GET', '/foo'), ->(env) { [200, {}, ['foo']] })
-      router << Route.new(:woot, Matcher.new('POST', %r{/w(o+)t}), ->(env) { [200, {}, ['woot']] })
+      Router.new do
+        get :foo, '/foo' do
+          [200, {}, ['foo']]
+        end
 
-      router << Route.new(:resource, Matcher.new('PUT', %r{/resource/(?<id>.+)/?}), ->(env) {
-        [200, {}, [env['rack.routing_args']['id']]]
-      })
+        post :woot, %r{/w(o+)t} do
+          [200, {}, ['woot']]
+        end
 
-      router
+        put :resource, %r{/resource/(?<id>.+)/?} do |env|
+          [200, {}, [env['rack.routing_args']['id']]]
+        end
+      end
     end
 
     it 'returns 404 by default' do

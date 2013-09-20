@@ -2,8 +2,9 @@ module Roadie
   NOT_FOUND = [404, { 'Content-Type' => 'text/plain', 'X-Cascade' => 'pass' }, ['Not Found']]
 
   class Router
-    def initialize(routes = [])
-      @routes = routes
+    def initialize(&block)
+      @routes = []
+      instance_eval(&block) if block
     end
 
     def call(env)
@@ -18,6 +19,15 @@ module Roadie
     def <<(route)
       @routes << route
     end
+
+    def route(name, verb, path, handler = Proc.new)
+      self << Route.new(name, Matcher.new(verb, path), handler)
+    end
+
+    def get    name, path, handler = Proc.new; route name, 'GET',    path, handler; end
+    def post   name, path, handler = Proc.new; route name, 'POST',   path, handler; end
+    def put    name, path, handler = Proc.new; route name, 'PUT',    path, handler; end
+    def delete name, path, handler = Proc.new; route name, 'DELETE', path, handler; end
 
     private
 
