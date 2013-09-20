@@ -89,26 +89,20 @@ module Roadie
   end
 
   describe Matcher do
-    describe '#matches?' do
-      context 'with strings' do
-        let(:matcher) { Matcher.new('POST', '/foo') }
+    context 'with strings' do
+      subject { Matcher.new('POST', '/foo') }
 
-        it 'matches a request' do
-          expect(matcher.matches?(req('POST', '/bar'))).to be_false
-          expect(matcher.matches?(req('GET',  '/foo'))).to be_false
-          expect(matcher.matches?(req('POST', '/foo'))).to be_true
-        end
-      end
+      it { should_not match req('POST', '/bar') }
+      it { should_not match req('GET',  '/foo') }
+      it { should     match req('POST', '/foo') }
+    end
 
-      context 'with regexes' do
-        let(:matcher) { Matcher.new('GET', %r{/foo(/(.+))?}) }
+    context 'with regexes' do
+      subject { Matcher.new('GET', %r{/foo(/(.+))?}) }
 
-        it 'matches a request' do
-          expect(matcher.matches?(req('GET',  '/foo' ))).to be_true
-          expect(matcher.matches?(req('POST', '/foo/'))).to be_false
-          expect(matcher.matches?(req('',     '/foo/'))).to be_false
-        end
-      end
+      it { should     match req('GET',  '/foo' ) }
+      it { should_not match req('POST', '/foo/') }
+      it { should_not match req('',     '/foo/') }
     end
 
     describe '#params' do

@@ -70,6 +70,7 @@ module Roadie
     def matches?(env)
       @verb == env['REQUEST_METHOD'] && @path =~ env['PATH_INFO']
     end
+    alias :match :matches?
 
     def params(env)
       match = @path.match(env['PATH_INFO'])
