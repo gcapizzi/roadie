@@ -9,7 +9,7 @@ module Roadie
 
     let(:app) do
       Router.new do
-        get :foo, '/foo' do
+        get :foo, %r{/foo} do
           [200, {}, ['foo']]
         end
 

@@ -89,21 +89,11 @@ module Roadie
   end
 
   describe Matcher do
-    context 'with strings' do
-      subject { Matcher.new('POST', '/foo') }
+    subject { Matcher.new('GET', %r{/foo(/(.+))?}) }
 
-      it { should_not match req('POST', '/bar') }
-      it { should_not match req('GET',  '/foo') }
-      it { should     match req('POST', '/foo') }
-    end
-
-    context 'with regexes' do
-      subject { Matcher.new('GET', %r{/foo(/(.+))?}) }
-
-      it { should     match req('GET',  '/foo' ) }
-      it { should_not match req('POST', '/foo/') }
-      it { should_not match req('',     '/foo/') }
-    end
+    it { should     match req('GET',  '/foo' ) }
+    it { should_not match req('POST', '/foo/') }
+    it { should_not match req('',     '/foo/') }
 
     describe '#params' do
       let(:matcher) { Matcher.new('GET', %r{/resource/(?<id>.+)/?}) }

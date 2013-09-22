@@ -62,29 +62,19 @@ module Roadie
   end
 
   class Matcher
-    def initialize(verb, path)
+    def initialize(verb, path_pattern)
       @verb = String(verb)
-      @path = regex(path)
+      @path_pattern = path_pattern
     end
 
     def matches?(env)
-      @verb == env['REQUEST_METHOD'] && @path =~ env['PATH_INFO']
+      @verb == env['REQUEST_METHOD'] && @path_pattern =~ env['PATH_INFO']
     end
     alias :match :matches?
 
     def params(env)
-      match = @path.match(env['PATH_INFO'])
+      match = @path_pattern.match(env['PATH_INFO'])
       Hash[match.names.zip(match.captures)]
-    end
-
-    private
-
-    def regex(pattern)
-      if pattern.is_a? String
-        Regexp.compile("\\A#{Regexp.escape(pattern)}\\Z")
-      else
-        pattern
-      end
     end
   end
 end
