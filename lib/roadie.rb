@@ -18,6 +18,10 @@ module Roadie
       default_route.call(env)
     end
 
+    def url_for(route_name, params)
+      @routes.find { |r| r.name == route_name }.expand_url(params)
+    end
+
     def <<(route)
       @routes << route
     end
@@ -62,6 +66,10 @@ module Roadie
 
       NOT_FOUND
     end
+
+    def expand_url(params)
+      @matcher.expand(params)
+    end
   end
 
   class Matcher
@@ -75,6 +83,10 @@ module Roadie
       FailedMatch.new
     end
 
+    def expand(params)
+      get_expander.expand(params)
+    end
+
     private
 
     def matches?(env)
@@ -82,8 +94,11 @@ module Roadie
     end
 
     def params(env)
-      match = @path_pattern.match(env['PATH_INFO'])
-      Hash[match.names.zip(match.captures)]
+      @path_pattern.params(env['PATH_INFO'])
+    end
+
+    def get_expander
+      Mustermann::Expander.new(@path_pattern, additional_values: :ignore)
     end
   end
 

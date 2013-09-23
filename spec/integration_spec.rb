@@ -9,15 +9,15 @@ module Roadie
 
     let(:app) do
       Router.new do
-        get :foo, %r{/foo} do
+        get :foo, Mustermann.new('/foo') do
           [200, {}, ['foo']]
         end
 
-        post :woot, %r{/w(o+)t} do
+        post :woot, Mustermann.new('/woot/*')  do
           [200, {}, ['woot']]
         end
 
-        put :resource, %r{/resource/(?<id>.+)/?} do |env|
+        put :resource, Mustermann.new('/resource/:id') do |env|
           [200, {}, [env['rack.routing_args']['id']]]
         end
       end
@@ -34,13 +34,13 @@ module Roadie
       expect(last_response.body).to eq('foo')
     end
 
-    it 'matches an url with a regex' do
-      post '/woooooot'
+    it 'matches an url with a pattern' do
+      post '/woot/bla/bla'
       expect(last_response.status).to eq(200)
       expect(last_response.body).to eq('woot')
     end
 
-    it 'stores named matches in roadie.params' do
+    it 'stores named matches in rack.routing_args' do
       put '/resource/123'
       expect(last_response.body).to eq('123')
     end
