@@ -1,3 +1,5 @@
+require 'mustermann'
+
 module Roadie
   NOT_FOUND = [404, { 'Content-Type' => 'text/plain', 'X-Cascade' => 'pass' }, ['Not Found']]
 
@@ -52,8 +54,9 @@ module Roadie
     end
 
     def call(env)
-      if @matcher.matches?(env)
-        env[PARAMETERS_KEY] = @matcher.params(env)
+      match = @matcher.match(env)
+      if match.ok?
+        env[PARAMETERS_KEY] = match.params
         return @handler.call(env)
       end
 
@@ -67,14 +70,39 @@ module Roadie
       @path_pattern = path_pattern
     end
 
+    def match(env)
+      return SuccessfulMatch.new(params(env)) if matches?(env)
+      FailedMatch.new
+    end
+
+    private
+
     def matches?(env)
       @verb == env['REQUEST_METHOD'] && @path_pattern =~ env['PATH_INFO']
     end
-    alias :match :matches?
 
     def params(env)
       match = @path_pattern.match(env['PATH_INFO'])
       Hash[match.names.zip(match.captures)]
     end
   end
+
+  class Match
+    attr_reader :params, :ok
+
+    def initialize(ok = false, params = {})
+      @ok = ok
+      @params = params
+    end
+
+    alias :ok? :ok
+  end
+
+  class SuccessfulMatch < Match
+    def initialize(params)
+      super(true, params)
+    end
+  end
+
+  class FailedMatch < Match; end
 end

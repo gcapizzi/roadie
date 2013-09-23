@@ -41,6 +41,7 @@ GEM
     lumberjack (1.0.4)
     method_source (0.8.1)
     multi_json (1.7.7)
+    mustermann (0.2.0)
     mutant (0.2.20)
       abstract_type (~> 0.0.3)
       adamantium (~> 0.0.7)
@@ -94,6 +95,7 @@ DEPENDENCIES
   guard
   guard-rspec
   json
+  mustermann
   mutant
   rack-test
   rake

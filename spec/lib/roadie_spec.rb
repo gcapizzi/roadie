@@ -69,7 +69,7 @@ module Roadie
 
     context 'when the matcher matches' do
       let(:url_params) { { 'foo' => 'bar' } }
-      let(:matcher) { double(matches?: true, params: url_params) }
+      let(:matcher) { double(match: SuccessfulMatch.new(url_params)) }
 
       it 'sets params and returns the handler response' do
         handler.should_receive(:call).with('rack.routing_args' => url_params)
@@ -78,7 +78,7 @@ module Roadie
     end
 
     context 'when the matcher doesn\'t match' do
-      let(:matcher) { double(matches?: false) }
+      let(:matcher) { double(match: FailedMatch.new) }
 
       it 'returns a 404 Not Found with X-Cascade => pass' do
         resp = route.call(env)
@@ -89,17 +89,34 @@ module Roadie
   end
 
   describe Matcher do
-    subject { Matcher.new('GET', %r{/foo(/(.+))?}) }
+    subject { Matcher.new('GET', Mustermann.new('/foo/:id')) }
+    let(:match) { subject.match(request) }
 
-    it { should     match req('GET',  '/foo' ) }
-    it { should_not match req('POST', '/foo/') }
-    it { should_not match req('',     '/foo/') }
+    describe '#match' do
+      context 'when the request matches' do
+        let(:request) { req('GET', '/foo/123') }
 
-    describe '#params' do
-      let(:matcher) { Matcher.new('GET', %r{/resource/(?<id>.+)/?}) }
+      it 'returns a successful match with all needed params' do
+          expect(match).to be_ok
+          expect(match.params).to eq('id' => '123')
+        end
+      end
 
-      it 'returns a hash of captures' do
-        expect(matcher.params(req('GET', '/resource/123'))).to eq('id' => '123')
+      shared_examples 'a match has failed' do
+        it 'returns an failed match with no params' do
+          expect(match).not_to be_ok
+          expect(match.params).to be_empty
+        end
+      end
+
+      context 'when the request doesn\'t match by verb' do
+        let(:request) { req('POST', '/foo/123') }
+        it_behaves_like 'a match has failed'
+      end
+
+      context 'when the request doesn\'t match by URL' do
+        let(:request) { req('GET', '/bar/123') }
+        it_behaves_like 'a match has failed'
       end
     end
 
