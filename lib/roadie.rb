@@ -26,8 +26,8 @@ module Roadie
       @routes << route
     end
 
-    def route(name, verb, path, handler = Proc.new)
-      self << Route.new(name, Matcher.new(verb, path), handler)
+    def route(name, method, path, handler = Proc.new)
+      self << Route.new(name, Matcher.new(path, methods: [method]), handler)
     end
 
     def get    name, path, handler = Proc.new; route name, 'GET',    path, handler; end
@@ -73,14 +73,17 @@ module Roadie
   end
 
   class Matcher
-    def initialize(verb, path_pattern)
-      @verb = String(verb)
+    def initialize(path_pattern, methods: ['GET'])
+      @methods = methods
       @path_pattern = path_pattern
     end
 
     def match(env)
-      return SuccessfulMatch.new(params(env)) if matches?(env)
-      FailedMatch.new
+      if matches?(env)
+        SuccessfulMatch.new(params(env))
+      else
+        FailedMatch.new
+      end
     end
 
     def expand(params)
@@ -90,7 +93,7 @@ module Roadie
     private
 
     def matches?(env)
-      @verb == env['REQUEST_METHOD'] && @path_pattern =~ env['PATH_INFO']
+      @methods.include?(env['REQUEST_METHOD']) && @path_pattern =~ env['PATH_INFO']
     end
 
     def params(env)

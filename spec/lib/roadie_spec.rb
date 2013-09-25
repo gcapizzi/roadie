@@ -119,14 +119,14 @@ module Roadie
   end
 
   describe Matcher do
-    subject { Matcher.new('GET', Mustermann.new('/foo/:id')) }
+    subject { Matcher.new(Mustermann.new('/foo/:id'), methods: ['GET', 'POST']) }
     let(:match) { subject.match(request) }
 
     describe '#match' do
       context 'when the request matches' do
-        let(:request) { req('GET', '/foo/123') }
+        let(:request) { req('POST', '/foo/123') }
 
-      it 'returns a successful match with all needed params' do
+        it 'returns a successful match with all needed params' do
           expect(match).to be_ok
           expect(match.params).to eq('id' => '123')
         end
@@ -139,8 +139,8 @@ module Roadie
         end
       end
 
-      context 'when the request doesn\'t match by verb' do
-        let(:request) { req('POST', '/foo/123') }
+      context 'when the request doesn\'t match by method' do
+        let(:request) { req('PUT', '/foo/123') }
         it_behaves_like 'a match has failed'
       end
 
@@ -158,8 +158,8 @@ module Roadie
 
     private
 
-    def req(verb, path)
-      { 'REQUEST_METHOD' => verb, 'PATH_INFO' => path }
+    def req(method, path)
+      { 'REQUEST_METHOD' => method, 'PATH_INFO' => path }
     end
   end
 
