@@ -87,7 +87,7 @@ module Roadie
     end
 
     def expand(params)
-      get_expander.expand(params)
+      @path_pattern.expand(params)
     end
 
     private
@@ -98,10 +98,6 @@ module Roadie
 
     def params(env)
       @path_pattern.params(env['PATH_INFO'])
-    end
-
-    def get_expander
-      Mustermann::Expander.new(@path_pattern, additional_values: :ignore)
     end
   end
 

@@ -152,7 +152,7 @@ module Roadie
 
     describe '#expand' do
       it 'expands the matcher URL' do
-        expect(subject.expand(:id => '123', foo: 'bar')).to eq('/foo/123')
+        expect(subject.expand(id: '123')).to eq('/foo/123')
       end
     end
 
