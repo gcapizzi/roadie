@@ -13,8 +13,8 @@ module Roadie
           [200, {}, ['foo']]
         end
 
-        post :woot, Mustermann.new('/woot/*')  do
-          [200, {}, ['woot']]
+        post :bar, Mustermann.new('/bar/*')  do
+          [200, {}, ['bar']]
         end
 
         put :resource, Mustermann.new('/resource/:id') do |env|
@@ -35,9 +35,9 @@ module Roadie
     end
 
     it 'matches an url with a pattern' do
-      post '/woot/bla/bla'
+      post '/bar/bla/bla'
       expect(last_response.status).to eq(200)
-      expect(last_response.body).to eq('woot')
+      expect(last_response.body).to eq('bar')
     end
 
     it 'stores named matches in rack.routing_args' do
