@@ -18,7 +18,7 @@ module Roadie
       default_route.call(env)
     end
 
-    def url_for(route_name, params)
+    def url_for(route_name, params = {})
       @routes.find { |r| r.name == route_name }.expand_url(params)
     end
 
@@ -72,7 +72,7 @@ module Roadie
       NOT_FOUND
     end
 
-    def expand_url(params)
+    def expand_url(params = {})
       @matcher.expand(params)
     end
   end
@@ -91,7 +91,7 @@ module Roadie
       end
     end
 
-    def expand(params)
+    def expand(params = {})
       @path_pattern.expand(params)
     end
 

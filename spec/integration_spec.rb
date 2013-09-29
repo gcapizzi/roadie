@@ -44,5 +44,12 @@ module Roadie
       put '/resource/123'
       expect(last_response.body).to eq('123')
     end
+
+    describe '#url_for' do
+      it 'expands the url for the given route' do
+        expect(app.url_for(:foo)).to eq('/foo')
+        expect(app.url_for(:resource, id: 123)).to eq('/resource/123')
+      end
+    end
   end
 end
