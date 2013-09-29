@@ -30,15 +30,15 @@ module Roadie
       self << Route.new(name, Matcher.new(path, methods: methods), handler)
     end
 
-    def get     name, path, handler = Proc.new; route name, path, handler, methods: ['GET'];     end
-    def post    name, path, handler = Proc.new; route name, path, handler, methods: ['POST'];    end
-    def put     name, path, handler = Proc.new; route name, path, handler, methods: ['PUT'];     end
-    def patch   name, path, handler = Proc.new; route name, path, handler, methods: ['PATCH'];   end
-    def delete  name, path, handler = Proc.new; route name, path, handler, methods: ['DELETE'];  end
-    def head    name, path, handler = Proc.new; route name, path, handler, methods: ['HEAD'];    end
-    def options name, path, handler = Proc.new; route name, path, handler, methods: ['OPTIONS']; end
-    def link    name, path, handler = Proc.new; route name, path, handler, methods: ['LINK'];    end
-    def unlink  name, path, handler = Proc.new; route name, path, handler, methods: ['UNLINK'];  end
+    def get     (name, path, handler = Proc.new) route name, path, handler, methods: ['GET']     end
+    def post    (name, path, handler = Proc.new) route name, path, handler, methods: ['POST']    end
+    def put     (name, path, handler = Proc.new) route name, path, handler, methods: ['PUT']     end
+    def patch   (name, path, handler = Proc.new) route name, path, handler, methods: ['PATCH']   end
+    def delete  (name, path, handler = Proc.new) route name, path, handler, methods: ['DELETE']  end
+    def head    (name, path, handler = Proc.new) route name, path, handler, methods: ['HEAD']    end
+    def options (name, path, handler = Proc.new) route name, path, handler, methods: ['OPTIONS'] end
+    def link    (name, path, handler = Proc.new) route name, path, handler, methods: ['LINK']    end
+    def unlink  (name, path, handler = Proc.new) route name, path, handler, methods: ['UNLINK']  end
 
     private
 
