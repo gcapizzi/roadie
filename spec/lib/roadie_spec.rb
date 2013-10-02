@@ -10,14 +10,6 @@ module Roadie
     let(:env) { {} }
 
     describe '#call' do
-      context 'when no route is defined' do
-        it 'returns a 404 Not Found with X-Cascade => pass' do
-          resp = subject.call(env)
-          expect(resp[0].to_i).to eq(404)
-          expect(resp[1]['X-Cascade']).to eq('pass')
-        end
-      end
-
       context 'when a route matches' do
         let(:other_matching_route) { double(Route, call: ok_resp) }
 
@@ -49,10 +41,25 @@ module Roadie
           3.times { subject << not_matching_route }
         end
 
-        it 'returns a 404 Not Found with X-Cascade => pass' do
-          resp = subject.call(env)
-          expect(resp[0].to_i).to eq(404)
-          expect(resp[1]['X-Cascade']).to eq('pass')
+        context 'when no default route is set' do
+          it 'returns a 404 Not Found with X-Cascade => pass' do
+            resp = subject.call(env)
+            expect(resp[0].to_i).to eq(404)
+            expect(resp[1]['X-Cascade']).to eq('pass')
+          end
+        end
+
+        context 'when a default route is set' do
+          let(:default_resp) { [200, {}, ['default response']] }
+
+          before do
+            subject.default_route = double
+            subject.default_route.stub(:call).with(env).and_return(default_resp)
+          end
+
+          it 'returns the response from the default route' do
+            expect(subject.call(env)).to eq(default_resp)
+          end
         end
       end
     end

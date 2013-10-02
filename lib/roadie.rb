@@ -4,8 +4,11 @@ module Roadie
   NOT_FOUND = [404, { 'Content-Type' => 'text/plain', 'X-Cascade' => 'pass' }, ['Not Found']]
 
   class Router
-    def initialize(&block)
+    attr_accessor :default_route
+
+    def initialize(default_route = proc { NOT_FOUND }, &block)
       @routes = []
+      @default_route = default_route
       instance_eval(&block) if block
     end
 
@@ -41,10 +44,6 @@ module Roadie
     def unlink  (name, path, handler = Proc.new) route name, path, handler, methods: ['UNLINK']  end
 
     private
-
-    def default_route
-      proc { NOT_FOUND }
-    end
 
     def pass?(response)
       response[1]['X-Cascade'] == 'pass'
