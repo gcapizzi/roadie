@@ -129,6 +129,15 @@ module Roadie
     subject { Matcher.new(Mustermann.new('/foo/:id'), methods: ['GET', 'POST']) }
     let(:match) { subject.match(request) }
 
+    context 'when no methods are specified' do
+      subject { Matcher.new(Mustermann.new('/foo')) }
+
+      it 'matches only GETs' do
+        expect(subject.match(req('GET', '/foo'))).to be_ok
+        expect(subject.match(req('PUT', '/foo'))).not_to be_ok
+      end
+    end
+
     describe '#match' do
       context 'when the request matches' do
         let(:request) { req('POST', '/foo/123') }
