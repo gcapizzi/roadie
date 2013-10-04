@@ -9,15 +9,15 @@ module Roadie
 
     let(:app) do
       Router.new do
-        get :foo, Mustermann.new('/foo') do
+        get :foo, '/foo' do
           [200, {}, ['foo']]
         end
 
-        post :bar, Mustermann.new('/bar/*')  do
+        post :bar, '/bar/*'  do
           [200, {}, ['bar']]
         end
 
-        put :resource, Mustermann.new('/resource/:id') do |env|
+        put :resource, '/resource/:id' do |env|
           [200, {}, [env['rack.routing_args']['id']]]
         end
       end

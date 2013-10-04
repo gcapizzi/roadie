@@ -30,7 +30,7 @@ module Roadie
     end
 
     def route(name, path, handler = Proc.new, methods: [])
-      self << Route.new(name, Matcher.new(path, methods: methods), handler)
+      self << Route.new(name, Matcher.new(Mustermann.new(path), methods: methods), handler)
     end
 
     def get     (name, path, handler = Proc.new) route name, path, handler, methods: ['GET']     end
