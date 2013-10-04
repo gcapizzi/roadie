@@ -170,6 +170,14 @@ module Roadie
       it 'expands the matcher URL' do
         expect(subject.expand(id: '123')).to eq('/foo/123')
       end
+
+      context 'when the pattern has no placeholders and no params are passed' do
+        subject { Matcher.new(Mustermann.new('/foo/bar'), methods: ['GET']) }
+
+        it 'just returns the path' do
+          expect(subject.expand).to eq('/foo/bar')
+        end
+      end
     end
 
     private
