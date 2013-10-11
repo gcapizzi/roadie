@@ -16,4 +16,4 @@ task :coverage do
   Rake::Task['spec'].execute
 end
 
-task :default => :spec
+task default: :spec
