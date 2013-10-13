@@ -191,7 +191,7 @@ module Roadie
 
   describe Match do
     it 'is not ok by default' do
-      expect(Match.new.ok?).to be_false
+      expect(Match.new.ok?).to be(false)
     end
 
     describe '#initialize' do
