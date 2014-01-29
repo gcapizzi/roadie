@@ -25,11 +25,11 @@ module Roadie
       @routes << route
     end
 
-    def route(name, path, handler = Proc.new, methods: [])
+    def route(name, path, handler = Proc.new, methods: ['GET'])
       self << Route.new(name, Matcher.new(Mustermann.new(path), methods: methods), handler)
     end
 
-    def get     (name, path, handler = Proc.new) route name, path, handler, methods: ['GET']     end
+    def get     (name, path, handler = Proc.new) route name, path, handler                       end
     def post    (name, path, handler = Proc.new) route name, path, handler, methods: ['POST']    end
     def put     (name, path, handler = Proc.new) route name, path, handler, methods: ['PUT']     end
     def patch   (name, path, handler = Proc.new) route name, path, handler, methods: ['PATCH']   end
