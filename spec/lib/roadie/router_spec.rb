@@ -12,22 +12,18 @@ module Roadie
       context 'when a route matches' do
         let(:other_matching_route) { double(Route, call: ok_resp) }
 
-        before do
-          subject << not_matching_route << matching_route << not_matching_route << other_matching_route
-        end
+        subject { Router.new [not_matching_route, matching_route, not_matching_route, other_matching_route] }
 
         it 'stops trying and returns the route response' do
           other_matching_route.should_not_receive(:call)
           expect(subject.call(env)).to eq(ok_resp)
         end
 
-        context 'when the matching route replies with X-Cascade => pass' do
+        context 'when a matching route replies with X-Cascade => pass' do
           let(:ok_pass_resp) { [200, { 'X-Cascade' => 'pass' }, ['ok and pass']] }
-          let(:matching_passing_route) { double(Route, call: ok_pass_resp) }
+          let(:matching_and_passing_route) { double(Route, call: ok_pass_resp) }
 
-          before do
-            subject << not_matching_route << matching_passing_route << not_matching_route << matching_route
-          end
+          subject { Router.new [not_matching_route, matching_and_passing_route, matching_route] }
 
           it 'keeps trying other routes' do
             expect(subject.call(env)).to eq(ok_resp)
@@ -36,9 +32,8 @@ module Roadie
       end
 
       context 'when no route matches' do
-        before do
-          3.times { subject << not_matching_route }
-        end
+        let(:routes) { [not_matching_route] * 3 }
+        subject { Router.new(routes) }
 
         context 'when no default route is set' do
           it 'returns a 404 Not Found with X-Cascade => pass' do
@@ -50,11 +45,11 @@ module Roadie
 
         context 'when a default route is set' do
           let(:default_resp) { [200, {}, ['default response']] }
+          let(:default_route) { double(Route) }
 
-          before do
-            subject.default_route = double
-            subject.default_route.stub(:call).with(env).and_return(default_resp)
-          end
+          before { default_route.stub(:call).with(env).and_return(default_resp) }
+
+          subject { Router.new(routes, default_route) }
 
           it 'returns the response from the default route' do
             expect(subject.call(env)).to eq(default_resp)
@@ -70,8 +65,9 @@ module Roadie
       before do
         foo_route.stub(:expand_url).with(id: '123').and_return('/foo/123')
         bar_route.stub(:expand_url).with(id: '456').and_return('/bar/456')
-        subject << foo_route << bar_route
       end
+
+      subject { Router.new [foo_route, bar_route] }
 
       it 'expands a route URL' do
         expect(subject.url_for(:foo, id: '123')).to eq('/foo/123')

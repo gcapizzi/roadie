@@ -2,10 +2,8 @@ require 'roadie/route'
 
 module Roadie
   class Router
-    attr_accessor :default_route
-
-    def initialize(default_route = proc { NOT_FOUND }, &block)
-      @routes = []
+    def initialize(routes = [], default_route = proc { NOT_FOUND }, &block)
+      @routes = routes
       @default_route = default_route
       instance_eval(&block) if block
     end
@@ -16,7 +14,7 @@ module Roadie
         return resp unless pass?(resp)
       end
 
-      default_route.call(env)
+      @default_route.call(env)
     end
 
     def url_for(route_name, params = {})
