@@ -1,3 +1,5 @@
+require 'mustermann'
+
 require 'roadie/route'
 
 module Roadie

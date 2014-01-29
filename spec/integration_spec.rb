@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rack/test'
 
-require './lib/roadie'
+require 'roadie'
 
 module Roadie
   describe Router do

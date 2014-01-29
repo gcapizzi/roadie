@@ -1,4 +1,5 @@
-require './lib/roadie/router'
+require 'spec_helper'
+require 'roadie/router'
 
 module Roadie
 
