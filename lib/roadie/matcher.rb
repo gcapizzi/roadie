@@ -1,8 +1,10 @@
+require 'mustermann'
+
 module Roadie
   class Matcher
     def initialize(path_pattern, methods: ['GET'])
       @methods = methods
-      @path_pattern = path_pattern
+      @path_pattern = Mustermann.new(path_pattern)
     end
 
     def match(env)

@@ -1,5 +1,3 @@
-require 'mustermann'
-
 require 'roadie/route'
 
 module Roadie
@@ -28,7 +26,7 @@ module Roadie
     end
 
     def route(name, path, handler = Proc.new, methods: ['GET'])
-      self << Route.new(name, Matcher.new(Mustermann.new(path), methods: methods), handler)
+      self << Route.new(name, Matcher.new(path, methods: methods), handler)
     end
 
     def get     (name, path, handler = Proc.new) route name, path, handler                       end

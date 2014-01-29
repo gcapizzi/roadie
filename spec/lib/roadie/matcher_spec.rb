@@ -1,17 +1,15 @@
 require 'spec_helper'
 
-require 'mustermann'
-
 require 'roadie/matcher'
 
 module Roadie
 
   describe Matcher do
-    subject { Matcher.new(Mustermann.new('/foo/:id'), methods: ['GET', 'POST']) }
+    subject { Matcher.new('/foo/:id', methods: ['GET', 'POST']) }
     let(:match) { subject.match(request) }
 
     context 'when no methods are specified' do
-      subject { Matcher.new(Mustermann.new('/foo')) }
+      subject { Matcher.new('/foo') }
 
       it 'matches only GETs' do
         expect(subject.match(req('GET', '/foo'))).to be_ok
@@ -53,7 +51,7 @@ module Roadie
       end
 
       context 'when the pattern has no placeholders and no params are passed' do
-        subject { Matcher.new(Mustermann.new('/foo/bar'), methods: ['GET']) }
+        subject { Matcher.new('/foo/bar', methods: ['GET']) }
 
         it 'just returns the path' do
           expect(subject.expand).to eq('/foo/bar')
