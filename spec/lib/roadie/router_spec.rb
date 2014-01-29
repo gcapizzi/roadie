@@ -29,6 +29,18 @@ module Roadie
             expect(subject.call(env)).to eq(ok_resp)
           end
         end
+
+        context 'when a route uses X-Cascade with the wrong value' do
+          let(:wrong_pass_resp) { [200, { 'X-Cascade' => 'wrong' }, ['you must use the "pass" value']] }
+          let(:matching_and_passing_wrong_route) { double(Route, call: wrong_pass_resp) }
+
+          subject { Router.new [not_matching_route, matching_and_passing_wrong_route, matching_route] }
+
+          it 'ignores the X-Cascade directive' do
+            response = subject.call(env)
+            expect(response[1]['X-Cascade']).to eq('wrong')
+          end
+        end
       end
 
       context 'when no route matches' do
