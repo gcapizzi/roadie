@@ -18,7 +18,7 @@ module Roadie
     describe '#call' do
       context 'when the matcher matches' do
         let(:url_params) { { 'foo' => 'bar' } }
-        let(:matcher) { double(match: SuccessfulMatch.new(url_params)) }
+        let(:matcher) { double(match: Match.ok(url_params)) }
 
         it 'sets params and returns the handler response' do
           handler.should_receive(:call).with('rack.routing_args' => url_params)
@@ -27,7 +27,7 @@ module Roadie
       end
 
       context 'when the matcher doesn\'t match' do
-        let(:matcher) { double(match: FailedMatch.new) }
+        let(:matcher) { double(match: Match.fail) }
 
         it 'returns a 404 Not Found with X-Cascade => pass' do
           resp = route.call(env)

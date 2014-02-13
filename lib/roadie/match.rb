@@ -8,13 +8,13 @@ module Roadie
     end
 
     alias :ok? :ok
-  end
 
-  class SuccessfulMatch < Match
-    def initialize(params)
-      super(true, params)
+    def self.ok(params = {})
+      new(true, params)
+    end
+
+    def self.fail
+      new(false)
     end
   end
-
-  class FailedMatch < Match; end
 end

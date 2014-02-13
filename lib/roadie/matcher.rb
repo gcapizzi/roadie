@@ -11,9 +11,9 @@ module Roadie
 
     def match(env)
       if matches?(env)
-        SuccessfulMatch.new(params(env))
+        Match.ok(params(env))
       else
-        FailedMatch.new
+        Match.fail
       end
     end
 
