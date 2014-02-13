@@ -1,3 +1,5 @@
+require 'rack'
+
 require 'roadie/builder'
 require 'roadie/router'
 require 'roadie/matcher'
@@ -5,17 +7,8 @@ require 'roadie/matcher'
 module Roadie
   describe Builder do
     let(:router) { double(Router) }
-    let(:matcher) { double(Matcher) }
-    let(:handler) { double(:handler) }
-    let(:route) { double(Route, name: :foo, matcher: matcher, handler: handler) }
+    let(:route_name) { :route_name }
     let(:path) { '/foo' }
-
-    before do
-      allow(Route).to receive(:new).with(route.name, matcher, route.handler).and_return(route)
-      allow(Matcher).to receive(:new).with(path, methods: [method]).and_return(matcher)
-
-      expect(router).to receive(:<<).with(route)
-    end
 
     subject { Builder.new(router) }
 
@@ -24,11 +17,20 @@ module Roadie
 
     methods.each do |method|
       describe "##{method.downcase}" do
+        before do
+          expect(router).to receive(:<<) do |route|
+            expect(route.name).to eq(route_name)
+            response = Rack::MockRequest.new(route).request(method, path)
+            expect(response.body).to eq("#{method} response")
+          end
+        end
+
         let(:method) { method }
 
         it "adds a #{method} route do the router" do
           method_name = method.downcase.to_sym
-          subject.send(method_name, route.name, path, handler)
+          handler = proc { [200, {}, "#{method} response"] }
+          subject.send(method_name, route_name, path, handler)
         end
       end
     end
