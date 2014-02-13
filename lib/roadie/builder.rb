@@ -3,7 +3,7 @@ require 'roadie/matcher'
 
 module Roadie
   class Builder
-    def initialize(router, &block)
+    def initialize(router)
       @router = router
     end
 
