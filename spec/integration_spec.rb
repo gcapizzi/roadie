@@ -8,7 +8,7 @@ module Roadie
     include Rack::Test::Methods
 
     let(:app) do
-      Router.new do
+      Router.build do
         get :foo, '/foo' do
           [200, {}, ['foo']]
         end
