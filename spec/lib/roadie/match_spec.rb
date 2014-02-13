@@ -6,11 +6,12 @@ module Roadie
     let(:params) { { foo: 'bar' } }
 
     describe '#initialize' do
-      it 'sets the ok flag and the params' do
-        match = Match.new(true, params)
+      it 'sets the ok flag' do
+        expect(Match.new(true)).to be_ok
+      end
 
-        expect(match).to be_ok
-        expect(match.params).to eq(params)
+      it 'sets the params' do
+        expect(Match.new(true, params).params).to eq(params)
       end
 
       it 'creates a failed match by default' do
@@ -20,10 +21,12 @@ module Roadie
 
     describe '.ok' do
       it 'creates a successful match' do
-        match = Match.ok(params)
+        expect(Match.ok).to be_ok
+      end
 
-        expect(match).to be_ok
-        expect(match.params).to eq(params)
+      it 'sets the params' do
+        expect(Match.ok.params).to be_empty
+        expect(Match.ok(params).params).to eq(params)
       end
     end
 
