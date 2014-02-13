@@ -1,3 +1,6 @@
+require 'roadie/route'
+require 'roadie/matcher'
+
 module Roadie
   class Builder
     def initialize(router, &block)

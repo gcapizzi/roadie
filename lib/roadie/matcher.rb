@@ -1,5 +1,7 @@
 require 'mustermann'
 
+require 'roadie/match'
+
 module Roadie
   class Matcher
     def initialize(path_pattern, methods: ['GET'])
