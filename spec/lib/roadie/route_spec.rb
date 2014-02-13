@@ -1,9 +1,9 @@
 require 'spec_helper'
+
 require 'roadie/route'
 require 'roadie/match'
 
 module Roadie
-
   describe Route do
     let(:ok_resp) { [200, {}, ['ok']] }
     let(:handler) { double('handler', call: ok_resp) }
@@ -49,5 +49,4 @@ module Roadie
       end
     end
   end
-
 end
