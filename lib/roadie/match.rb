@@ -14,7 +14,7 @@ module Roadie
     end
 
     def self.fail
-      new(false)
+      new
     end
   end
 end
