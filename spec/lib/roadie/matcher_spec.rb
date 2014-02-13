@@ -62,7 +62,7 @@ module Roadie
     private
 
     def req(method, path)
-      { 'REQUEST_METHOD' => method, 'PATH_INFO' => path }
+      Rack::MockRequest.env_for(path, method: method)
     end
   end
 end
