@@ -12,8 +12,7 @@ module Roadie
 
     subject { Builder.new(router) }
 
-    methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS',
-               'LINK', 'UNLINK']
+    methods = %w(GET POST PUT PATCH DELETE HEAD OPTIONS LINK UNLINK)
 
     methods.each do |method|
       describe "##{method.downcase}" do

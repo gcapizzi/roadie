@@ -39,8 +39,8 @@ module Roadie
 
     describe '#expand_url' do
       before do
-        matcher.stub(:expand).with({}).and_return('/foo')
-        matcher.stub(:expand).with(id: '123').and_return('/foo/123')
+        matcher.stub(:expand).with({}) { '/foo' }
+        matcher.stub(:expand).with(id: '123') { '/foo/123' }
       end
 
       it 'expands the route URL' do

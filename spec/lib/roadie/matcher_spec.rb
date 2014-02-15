@@ -5,7 +5,7 @@ require 'roadie/matcher'
 
 module Roadie
   describe Matcher do
-    subject { Matcher.new('/foo/:id', methods: ['GET', 'POST']) }
+    subject { Matcher.new('/foo/:id', methods: %w(GET POST)) }
     let(:match) { subject.match(request) }
 
     context 'when no methods are specified' do
@@ -50,16 +50,14 @@ module Roadie
         expect(subject.expand(id: '123')).to eq('/foo/123')
       end
 
-      context 'when the pattern has no placeholders and no params are passed' do
-        subject { Matcher.new('/foo/bar', methods: ['GET']) }
+      context 'when the pattern has no placeholders and params is empty' do
+        subject { Matcher.new('/foo/bar', methods: %w(GET)) }
 
         it 'just returns the path' do
           expect(subject.expand).to eq('/foo/bar')
         end
       end
     end
-
-    private
 
     def req(method, path)
       Rack::MockRequest.env_for(path, method: method)

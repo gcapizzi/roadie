@@ -3,11 +3,10 @@ module Roadie
     attr_reader :params, :ok
 
     def initialize(ok = false, params = {})
-      @ok = ok
-      @params = params
+      @ok, @params = ok, params
     end
 
-    alias :ok? :ok
+    alias_method :ok?, :ok
 
     def self.ok(params = {})
       new(true, params)

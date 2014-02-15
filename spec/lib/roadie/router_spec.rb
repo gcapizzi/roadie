@@ -27,13 +27,9 @@ module Roadie
         end
 
         context 'when a matching route replies with X-Cascade => pass' do
-          let(:ok_pass_resp) { [200, { 'X-Cascade' => 'pass' }, ['ok and pass']] }
-          let(:matching_and_passing_route) { double(Route, call: ok_pass_resp) }
-          let(:routes) do
-            [not_matching_route,
-             matching_and_passing_route,
-             matching_route]
-          end
+          let(:ok_pass_resp) { [200, { 'X-Cascade' => 'pass' }, []] }
+          let(:passing_route) { double(Route, call: ok_pass_resp) }
+          let(:routes) { [passing_route, matching_route] }
 
           it 'keeps trying other routes' do
             expect(subject.call(env)).to eq(ok_resp)
@@ -41,13 +37,9 @@ module Roadie
         end
 
         context 'when a route uses X-Cascade with the wrong value' do
-          let(:wrong_pass_resp) { [200, { 'X-Cascade' => 'wrong' }, ['you must use the "pass" value']] }
-          let(:matching_and_passing_wrong_route) { double(Route, call: wrong_pass_resp) }
-          let(:routes) do
-            [not_matching_route,
-             matching_and_passing_wrong_route,
-             matching_route]
-          end
+          let(:wrong_pass_resp) { [200, { 'X-Cascade' => 'wrong' }, []] }
+          let(:wrong_pass_route) { double(Route, call: wrong_pass_resp) }
+          let(:routes) { [wrong_pass_route, matching_route] }
 
           it 'ignores the X-Cascade directive' do
             response = subject.call(env)
@@ -71,7 +63,7 @@ module Roadie
           let(:default_resp) { [200, {}, ['default response']] }
           let(:default_route) { double(Route) }
 
-          before { default_route.stub(:call).with(env).and_return(default_resp) }
+          before { default_route.stub(:call).with(env) { default_resp } }
 
           subject { Router.new(routes, default_route) }
 
@@ -88,8 +80,8 @@ module Roadie
       let(:routes) { [foo_route, bar_route] }
 
       before do
-        foo_route.stub(:expand_url).with(id: '123').and_return('/foo/123')
-        bar_route.stub(:expand_url).with(id: '456').and_return('/bar/456')
+        foo_route.stub(:expand_url).with(id: '123') { '/foo/123' }
+        bar_route.stub(:expand_url).with(id: '456') { '/bar/456' }
       end
 
       it 'expands a route URL' do

@@ -12,8 +12,7 @@ module Roadie
       @router
     end
 
-    methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS',
-               'LINK', 'UNLINK']
+    methods = %w(GET POST PUT PATCH DELETE HEAD OPTIONS LINK UNLINK)
 
     methods.each do |method|
       method_name = method.downcase
