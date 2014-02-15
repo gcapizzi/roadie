@@ -11,5 +11,6 @@ group :test do
   gem 'guard-rspec'
   gem 'simplecov'
   gem 'debugger'
-  gem 'mutant', git: 'https://github.com/solnic/mutant.git', branch: 'auto-expand-scope'
+  gem 'mutant', '0.3.4'
+  gem 'rubocop'
 end
