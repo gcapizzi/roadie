@@ -11,6 +11,7 @@ group :test do
   gem 'guard-rspec'
   gem 'simplecov'
   gem 'debugger'
-  gem 'mutant', '0.3.4'
+  gem 'mutant'
+  gem 'mutant-rspec'
   gem 'rubocop'
 end
