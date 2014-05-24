@@ -14,12 +14,10 @@ module Roadie
     describe '#call' do
       context 'when a route matches' do
         let(:other_matching_route) { double(Route, call: ok_resp) }
-        let(:routes) do
-          [not_matching_route,
-           matching_route,
-           not_matching_route,
-           other_matching_route]
-        end
+        let(:routes) { [not_matching_route,
+                        matching_route,
+                        not_matching_route,
+                        other_matching_route] }
 
         it 'stops trying and returns the route response' do
           expect(other_matching_route).not_to receive(:call)
