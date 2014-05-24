@@ -75,18 +75,24 @@ module Roadie
     end
 
     describe '#url_for' do
-      let(:foo_route) { double(Route, name: :foo) }
-      let(:bar_route) { double(Route, name: :bar) }
-      let(:routes) { [foo_route, bar_route] }
+      let(:routes) { [double(Route, name: 'first'), route, double(Route, name: 'last')] }
 
-      before do
-        foo_route.stub(:expand_url).with(id: '123') { '/foo/123' }
-        bar_route.stub(:expand_url).with(id: '456') { '/bar/456' }
+      before { allow(route).to receive(:expand_url).with(id: '123') { '/foo/123' } }
+
+      context 'when the route name is a symbol' do
+        let(:route) { double(Route, name: :foo) }
+
+        it 'expands a route URL' do
+          expect(subject.url_for(:foo, id: '123')).to eq('/foo/123')
+        end
       end
 
-      it 'expands a route URL' do
-        expect(subject.url_for(:foo, id: '123')).to eq('/foo/123')
-        expect(subject.url_for(:bar, id: '456')).to eq('/bar/456')
+      context 'when the route name is a string' do
+        let(:route) { double(Route, name: 'foo') }
+
+        it 'expands a route URL' do
+          expect(subject.url_for('foo', id: '123')).to eq('/foo/123')
+        end
       end
     end
   end
