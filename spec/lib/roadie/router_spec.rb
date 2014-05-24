@@ -22,7 +22,7 @@ module Roadie
         end
 
         it 'stops trying and returns the route response' do
-          other_matching_route.should_not_receive(:call)
+          expect(other_matching_route).not_to receive(:call)
           expect(subject.call(env)).to eq(ok_resp)
         end
 
@@ -63,7 +63,7 @@ module Roadie
           let(:default_resp) { [200, {}, ['default response']] }
           let(:default_route) { double(Route) }
 
-          before { default_route.stub(:call).with(env) { default_resp } }
+          before { allow(default_route).to receive(:call).with(env) { default_resp } }
 
           subject { Router.new(routes, default_route) }
 

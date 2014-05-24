@@ -21,7 +21,7 @@ module Roadie
         let(:matcher) { double(match: Match.ok(url_params)) }
 
         it 'sets params and returns the handler response' do
-          handler.should_receive(:call).with('rack.routing_args' => url_params)
+          expect(handler).to receive(:call).with('rack.routing_args' => url_params)
           expect(route.call(env)).to eq(ok_resp)
         end
       end
@@ -39,8 +39,8 @@ module Roadie
 
     describe '#expand_url' do
       before do
-        matcher.stub(:expand).with({}) { '/foo' }
-        matcher.stub(:expand).with(id: '123') { '/foo/123' }
+        allow(matcher).to receive(:expand).with({}) { '/foo' }
+        allow(matcher).to receive(:expand).with(id: '123') { '/foo/123' }
       end
 
       it 'expands the route URL' do
