@@ -4,7 +4,7 @@ require 'rack/test'
 require 'roadie'
 
 module Roadie
-  describe Router do
+  RSpec.describe Router do
     include Rack::Test::Methods
 
     let(:app) do

@@ -4,7 +4,7 @@ require 'roadie/route'
 require 'roadie/match'
 
 module Roadie
-  describe Route do
+  RSpec.describe Route do
     let(:ok_resp) { [200, {}, ['ok']] }
     let(:handler) { double('handler', call: ok_resp) }
     let(:matcher) { double }

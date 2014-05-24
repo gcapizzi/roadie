@@ -4,7 +4,7 @@ require 'rack'
 require 'roadie/matcher'
 
 module Roadie
-  describe Matcher do
+  RSpec.describe Matcher do
     subject { Matcher.new('/foo/:id', methods: %w(GET POST)) }
     let(:match) { subject.match(request) }
 

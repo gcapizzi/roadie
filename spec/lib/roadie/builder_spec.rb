@@ -5,7 +5,7 @@ require 'roadie/router'
 require 'roadie/matcher'
 
 module Roadie
-  describe Builder do
+  RSpec.describe Builder do
     let(:router) { double(Router) }
     let(:route_name) { :route_name }
     let(:path) { '/foo' }

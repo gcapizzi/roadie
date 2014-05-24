@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'roadie/router'
 
 module Roadie
-  describe Router do
+  RSpec.describe Router do
     let(:ok_resp) { [200, {}, ['ok']] }
     let(:matching_route) { double(Route, call: ok_resp) }
     let(:pass_resp) { [404, { 'X-Cascade' => 'pass' }, []] }

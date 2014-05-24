@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'roadie/match'
 
 module Roadie
-  describe Match do
+  RSpec.describe Match do
     let(:params) { { foo: 'bar' } }
 
     describe '#initialize' do
