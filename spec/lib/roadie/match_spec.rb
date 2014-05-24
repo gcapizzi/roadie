@@ -15,7 +15,7 @@ module Roadie
       end
 
       it 'creates a failed match by default' do
-        expect(Match.new).not_to be_ok
+        expect(Match.new.ok).to be(false)
         expect(Match.new.params).to be_empty
       end
     end
