@@ -14,8 +14,8 @@ module Roadie
 
     def call(env)
       @routes.each do |route|
-        resp = route.call(env)
-        return resp unless pass?(resp)
+        response = route.call(env)
+        return response unless pass?(response)
       end
 
       @default_route.call(env)

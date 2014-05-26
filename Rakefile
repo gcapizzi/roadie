@@ -7,7 +7,7 @@ end
 desc 'Run Mutant'
 task :mutant do
   require 'mutant'
-  Mutant::CLI.run(%w'--include lib --require roadie --use rspec ::Roadie*')
+  Mutant::CLI.run %w(--include lib --require roadie --use rspec ::Roadie*)
 end
 
 desc 'Run RSpec with code coverage'

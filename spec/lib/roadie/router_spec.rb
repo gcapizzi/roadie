@@ -70,15 +70,15 @@ module Roadie
         end
 
         context 'when a default route is set' do
-          let(:default_resp) { [200, {}, ['default response']] }
+          let(:default_response) { [200, {}, ['default response']] }
           let(:default_route) { double(Route) }
 
-          before { allow(default_route).to receive(:call).with(env) { default_resp } }
+          before { allow(default_route).to receive(:call).with(env) { default_response } }
 
           subject { Router.new(routes, default_route) }
 
           it 'returns the response from the default route' do
-            expect(subject.call(env)).to eq(default_resp)
+            expect(subject.call(env)).to eq(default_response)
           end
         end
       end

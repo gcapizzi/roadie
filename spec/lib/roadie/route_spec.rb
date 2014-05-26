@@ -5,8 +5,7 @@ require 'roadie/match'
 
 module Roadie
   RSpec.describe Route do
-    let(:ok_resp) { [200, {}, ['ok']] }
-    let(:handler) { double('handler', call: ok_resp) }
+    let(:handler) { double(:handler) }
     let(:matcher) { double }
     let(:route) { Route.new(:foo, matcher, handler) }
     let(:env) { {} }
@@ -19,10 +18,12 @@ module Roadie
       context 'when the matcher matches' do
         let(:url_params) { { 'foo' => 'bar' } }
         let(:matcher) { double(match: Match.ok(url_params)) }
+        let(:handler_env) { { 'rack.routing_args' => url_params } }
+        let(:ok_response) { [200, {}, ['ok']] }
 
         it 'sets params and returns the handler response' do
-          expect(handler).to receive(:call).with('rack.routing_args' => url_params)
-          expect(route.call(env)).to eq(ok_resp)
+          expect(handler).to receive(:call).with(handler_env) { ok_response }
+          expect(route.call(env)).to eq(ok_response)
         end
       end
 
@@ -30,9 +31,9 @@ module Roadie
         let(:matcher) { double(match: Match.fail) }
 
         it 'returns a 404 Not Found with X-Cascade => pass' do
-          resp = route.call(env)
-          expect(resp[0].to_i).to eq(404)
-          expect(resp[1]['X-Cascade']).to eq('pass')
+          response = route.call(env)
+          expect(response[0].to_i).to eq(404)
+          expect(response[1]['X-Cascade']).to eq('pass')
         end
       end
     end
