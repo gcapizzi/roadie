@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'rack/test'
+
 require 'roadie/router'
 
 module Roadie

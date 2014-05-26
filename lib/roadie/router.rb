@@ -1,4 +1,5 @@
 require 'roadie/route'
+require 'roadie/builder'
 
 module Roadie
   class Router
