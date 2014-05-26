@@ -1,8 +1,8 @@
+require 'spec_helper'
 require 'rack/test'
 
 require 'roadie/builder'
 require 'roadie/router'
-require 'roadie/matcher'
 
 module Roadie
   RSpec.describe Builder do

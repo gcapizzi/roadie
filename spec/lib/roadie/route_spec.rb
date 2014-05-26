@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 require 'roadie/route'
-require 'roadie/match'
+require 'roadie/matcher'
 
 module Roadie
   RSpec.describe Route do
     let(:handler) { double(:handler) }
-    let(:matcher) { double }
+    let(:matcher) { instance_double(Matcher) }
     let(:route) { Route.new(:foo, matcher, handler) }
     let(:env) { {} }
 
@@ -17,7 +17,7 @@ module Roadie
     describe '#call' do
       context 'when the matcher matches' do
         let(:url_params) { { 'foo' => 'bar' } }
-        let(:matcher) { double(match: Match.ok(url_params)) }
+        let(:matcher) { instance_double(Matcher, match: Match.ok(url_params)) }
         let(:handler_env) { { 'rack.routing_args' => url_params } }
         let(:ok_response) { [200, {}, ['ok']] }
 
@@ -28,7 +28,7 @@ module Roadie
       end
 
       context 'when the matcher doesn\'t match' do
-        let(:matcher) { double(match: Match.fail) }
+        let(:matcher) { instance_double(Matcher, match: Match.fail) }
 
         it 'returns a 404 Not Found with X-Cascade => pass' do
           response = route.call(env)

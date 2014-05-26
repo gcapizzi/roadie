@@ -6,9 +6,9 @@ require 'roadie/router'
 module Roadie
   RSpec.describe Router do
     let(:ok_resp) { [200, {}, ['ok']] }
-    let(:matching_route) { double(Route, call: ok_resp) }
+    let(:matching_route) { instance_double(Route, call: ok_resp) }
     let(:pass_resp) { [404, { 'X-Cascade' => 'pass' }, []] }
-    let(:not_matching_route) { double(Route, call: pass_resp) }
+    let(:not_matching_route) { instance_double(Route, call: pass_resp) }
     let(:env) { {} }
 
     subject { Router.new(routes) }
@@ -25,7 +25,7 @@ module Roadie
 
     describe '#call' do
       context 'when a route matches' do
-        let(:other_matching_route) { double(Route, call: ok_resp) }
+        let(:other_matching_route) { instance_double(Route, call: ok_resp) }
         let(:routes) { [not_matching_route,
                         matching_route,
                         not_matching_route,
@@ -38,7 +38,7 @@ module Roadie
 
         context 'when a matching route replies with X-Cascade => pass' do
           let(:ok_pass_resp) { [200, { 'X-Cascade' => 'pass' }, []] }
-          let(:passing_route) { double(Route, call: ok_pass_resp) }
+          let(:passing_route) { instance_double(Route, call: ok_pass_resp) }
           let(:routes) { [passing_route, matching_route] }
 
           it 'keeps trying other routes' do
@@ -48,7 +48,7 @@ module Roadie
 
         context 'when a route uses X-Cascade with the wrong value' do
           let(:wrong_pass_resp) { [200, { 'X-Cascade' => 'wrong' }, []] }
-          let(:wrong_pass_route) { double(Route, call: wrong_pass_resp) }
+          let(:wrong_pass_route) { instance_double(Route, call: wrong_pass_resp) }
           let(:routes) { [wrong_pass_route, matching_route] }
 
           it 'ignores the X-Cascade directive' do
@@ -71,7 +71,7 @@ module Roadie
 
         context 'when a default route is set' do
           let(:default_response) { [200, {}, ['default response']] }
-          let(:default_route) { double(Route) }
+          let(:default_route) { instance_double(Route) }
 
           before { allow(default_route).to receive(:call).with(env) { default_response } }
 
@@ -85,7 +85,9 @@ module Roadie
     end
 
     describe '#url_for' do
-      let(:routes) { [double(Route, name: 'first'), route, double(Route, name: 'last')] }
+      let(:routes) { [instance_double(Route, name: 'first'),
+                      route,
+                      instance_double(Route, name: 'last')] }
 
       before do
         allow(route).to receive(:expand_url).with({}) { '/foo' }
@@ -93,7 +95,7 @@ module Roadie
       end
 
       context 'when the route name is a symbol' do
-        let(:route) { double(Route, name: :foo) }
+        let(:route) { instance_double(Route, name: :foo) }
 
         it 'expands a route URL' do
           expect(subject.url_for(:foo)).to eq('/foo')
@@ -102,7 +104,7 @@ module Roadie
       end
 
       context 'when the route name is a string' do
-        let(:route) { double(Route, name: 'foo') }
+        let(:route) { instance_double(Route, name: 'foo') }
 
         it 'expands a route URL' do
           expect(subject.url_for('foo')).to eq('/foo')

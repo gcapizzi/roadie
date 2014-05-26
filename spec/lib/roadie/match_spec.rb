@@ -1,4 +1,5 @@
 require 'spec_helper'
+
 require 'roadie/match'
 
 module Roadie
