@@ -85,12 +85,16 @@ module Roadie
     describe '#url_for' do
       let(:routes) { [double(Route, name: 'first'), route, double(Route, name: 'last')] }
 
-      before { allow(route).to receive(:expand_url).with(id: '123') { '/foo/123' } }
+      before do
+        allow(route).to receive(:expand_url).with({}) { '/foo' }
+        allow(route).to receive(:expand_url).with(id: '123') { '/foo/123' }
+      end
 
       context 'when the route name is a symbol' do
         let(:route) { double(Route, name: :foo) }
 
         it 'expands a route URL' do
+          expect(subject.url_for(:foo)).to eq('/foo')
           expect(subject.url_for(:foo, id: '123')).to eq('/foo/123')
         end
       end
@@ -99,6 +103,7 @@ module Roadie
         let(:route) { double(Route, name: 'foo') }
 
         it 'expands a route URL' do
+          expect(subject.url_for('foo')).to eq('/foo')
           expect(subject.url_for('foo', id: '123')).to eq('/foo/123')
         end
       end
