@@ -2,7 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 
 RSpec.configure do |config|
-  config.expose_dsl_globally = false
+  config.disable_monkey_patching!
 end
 
 # Setup SimpleCov
