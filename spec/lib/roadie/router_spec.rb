@@ -11,6 +11,16 @@ module Roadie
 
     subject { Router.new(routes) }
 
+    describe '.build' do
+      it 'creates a router using a Builder' do
+        router = Router.build do
+          get :foo,  '/foo', proc { [200, {}, 'FOO'] }
+        end
+        response = Rack::MockRequest.new(router).request('GET', '/foo')
+        expect(response.body).to eq('FOO')
+      end
+    end
+
     describe '#call' do
       context 'when a route matches' do
         let(:other_matching_route) { double(Route, call: ok_resp) }

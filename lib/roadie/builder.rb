@@ -3,13 +3,13 @@ require 'roadie/matcher'
 
 module Roadie
   class Builder
-    def initialize(router)
-      @router = router
+    def initialize(routes = [])
+      @routes = routes
     end
 
     def build(&block)
       instance_eval(&block)
-      @router
+      Router.new(@routes)
     end
 
     methods = %w(GET POST PUT PATCH DELETE HEAD OPTIONS LINK UNLINK)
@@ -20,7 +20,7 @@ module Roadie
       define_method(method_name) do |name, path, handler = nil, &block|
         matcher = Matcher.new(path, methods: [method])
         handler ||= block
-        @router << Route.new(name, matcher, handler)
+        @routes << Route.new(name, matcher, handler)
       end
     end
   end

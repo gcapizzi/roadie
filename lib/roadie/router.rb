@@ -2,17 +2,13 @@ require 'roadie/route'
 
 module Roadie
   class Router
-    def initialize(routes = [], default_route = proc { NOT_FOUND })
+    def initialize(routes, default_route = proc { NOT_FOUND })
       @routes = routes
       @default_route = default_route
     end
 
     def self.build(&block)
-      new.build(&block)
-    end
-
-    def build(&block)
-      Builder.new(self).build(&block)
+      Builder.new.build(&block)
     end
 
     def call(env)
@@ -26,10 +22,6 @@ module Roadie
 
     def url_for(route_name, params = {})
       @routes.find { |r| r.name == route_name }.expand_url(params)
-    end
-
-    def <<(route)
-      @routes << route
     end
 
     private
