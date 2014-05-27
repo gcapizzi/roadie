@@ -7,27 +7,19 @@ module Roadie
   RSpec.describe Matcher do
     let(:path_pattern) { '/foo/:id' }
     let(:methods) { %w(GET POST) }
-    subject { Matcher.new(path_pattern, methods: methods) }
+    subject { Matcher.new(path_pattern, methods) }
     let(:match) { subject.match(request) }
 
     describe '#initialize' do
       it 'sets the Matcher path_pattern and methods' do
+        expect(subject.path_pattern).to be_a(Mustermann::Pattern)
         expect(subject.path_pattern.to_s).to eq(path_pattern)
         expect(subject.methods).to eq(methods)
       end
 
       context 'when the methods param does not respond to #each' do
         it 'raises an error' do
-          expect { Matcher.new('/foo', methods: 'FOO') }.to raise_error('The methods param should respond to #each')
-        end
-      end
-
-      context 'when the methods param is missing' do
-        subject { Matcher.new('/foo') }
-
-        it 'uses only GET' do
-          expect(subject.match(req('GET', '/foo'))).to be_ok
-          expect(subject.match(req('PUT', '/foo'))).not_to be_ok
+          expect { Matcher.new('/foo', 'FOO') }.to raise_error('The methods param should respond to #each')
         end
       end
     end
@@ -66,7 +58,7 @@ module Roadie
       end
 
       context 'when the pattern has no placeholders and params is empty' do
-        subject { Matcher.new('/foo/bar', methods: %w(GET)) }
+        subject { Matcher.new('/foo/bar', ['GET']) }
 
         it 'just returns the path' do
           expect(subject.expand).to eq('/foo/bar')
