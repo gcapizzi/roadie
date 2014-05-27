@@ -22,13 +22,13 @@ module Roadie
     end
 
     def url_for(route_name, params = {})
-      @routes.find { |r| r.name == route_name }.expand_url(params)
+      @routes.find { |r| r.name.eql?(route_name) }.expand_url(params)
     end
 
     private
 
     def pass?(response)
-      response[1]['X-Cascade'] == 'pass'
+      response[1]['X-Cascade'].eql?('pass')
     end
   end
 end
