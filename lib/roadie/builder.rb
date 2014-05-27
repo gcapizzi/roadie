@@ -19,8 +19,7 @@ module Roadie
 
       define_method(method_name) do |name, path, handler = nil, &block|
         matcher = Matcher.new(path, methods: [method])
-        handler ||= block
-        @routes << Route.new(name, matcher, handler)
+        @routes << Route.new(name, matcher, handler || block)
       end
     end
   end

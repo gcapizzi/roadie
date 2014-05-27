@@ -1,6 +1,6 @@
 module Roadie
   class Match
-    attr_reader :params, :ok
+    attr_reader :ok, :params
 
     def initialize(ok = false, params = {})
       @ok, @params = ok, params
