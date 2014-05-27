@@ -17,9 +17,13 @@ module Roadie
     describe '#call' do
       context 'when the matcher matches' do
         let(:url_params) { { 'foo' => 'bar' } }
-        let(:matcher) { instance_double(Matcher, match: Match.ok(url_params)) }
+        let(:matcher) { instance_double(Matcher) }
         let(:handler_env) { { 'rack.routing_args' => url_params } }
         let(:ok_response) { [200, {}, ['ok']] }
+
+        before do
+          allow(matcher).to receive(:match).with(env) { Match.ok(url_params) }
+        end
 
         it 'sets params and returns the handler response' do
           expect(handler).to receive(:call).with(handler_env) { ok_response }

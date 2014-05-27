@@ -6,12 +6,17 @@ require 'roadie/router'
 module Roadie
   RSpec.describe Router do
     let(:ok_resp) { [200, {}, ['ok']] }
-    let(:matching_route) { instance_double(Route, call: ok_resp) }
+    let(:matching_route) { instance_double(Route) }
     let(:pass_resp) { [404, { 'X-Cascade' => 'pass' }, []] }
-    let(:not_matching_route) { instance_double(Route, call: pass_resp) }
+    let(:not_matching_route) { instance_double(Route) }
     let(:env) { {} }
 
     subject { Router.new(routes) }
+
+    before do
+      allow(matching_route).to receive(:call).with(env) { ok_resp }
+      allow(not_matching_route).to receive(:call).with(env) { pass_resp }
+    end
 
     describe '.build' do
       it 'creates a router using a Builder' do
