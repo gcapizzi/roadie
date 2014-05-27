@@ -17,8 +17,8 @@ module Roadie
         end
 
         it "adds a #{method} route do the router" do
-          response = Rack::MockRequest.new(router).request(method, '/foo')
-          expect(response.body).to eq(method)
+          response = router.call(req(method, '/foo'))
+          expect(response.last).to eq(method)
         end
       end
     end

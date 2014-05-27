@@ -65,9 +65,5 @@ module Roadie
         end
       end
     end
-
-    def req(method, path)
-      Rack::MockRequest.env_for(path, method: method)
-    end
   end
 end

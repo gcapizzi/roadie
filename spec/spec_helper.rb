@@ -13,3 +13,9 @@ end
 
 require 'simplecov'
 SimpleCov.start if ENV['COVERAGE']
+
+# Helpers
+
+def req(method, path)
+  Rack::MockRequest.env_for(path, method: method)
+end

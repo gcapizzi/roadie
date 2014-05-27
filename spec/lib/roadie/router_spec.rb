@@ -23,8 +23,8 @@ module Roadie
         router = Router.build do
           get :foo,  '/foo', proc { [200, {}, 'FOO'] }
         end
-        response = Rack::MockRequest.new(router).request('GET', '/foo')
-        expect(response.body).to eq('FOO')
+        response = router.call(req('GET', '/foo'))
+        expect(response.last).to eq('FOO')
       end
     end
 
