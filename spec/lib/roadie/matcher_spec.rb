@@ -16,6 +16,12 @@ module Roadie
         expect(subject.methods).to eq(methods)
       end
 
+      context 'when the methods param does not respond to #each' do
+        it 'raises an error' do
+          expect { Matcher.new('/foo', methods: 'FOO') }.to raise_error('The methods param should respond to #each')
+        end
+      end
+
       context 'when the methods param is missing' do
         subject { Matcher.new('/foo') }
 

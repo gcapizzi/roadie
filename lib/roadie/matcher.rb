@@ -7,6 +7,8 @@ module Roadie
     attr_reader :path_pattern, :methods
 
     def initialize(path_pattern, methods: ['GET'])
+      fail('The methods param should respond to #each') unless methods.respond_to?(:each)
+
       @path_pattern = Mustermann.new(path_pattern)
       @methods = methods
     end
