@@ -10,11 +10,11 @@ module Roadie
 
     methods.each do |method|
       describe "##{method.downcase}" do
-        let(:router) {
+        let(:router) do
           subject.build do
             send(method.downcase, :foo, '/foo', proc { [200, {}, method] })
           end
-        }
+        end
 
         it "adds a #{method} route do the router" do
           response = Rack::MockRequest.new(router).request(method, '/foo')
