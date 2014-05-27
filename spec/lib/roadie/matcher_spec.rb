@@ -5,15 +5,24 @@ require 'roadie/matcher'
 
 module Roadie
   RSpec.describe Matcher do
-    subject { Matcher.new('/foo/:id', methods: %w(GET POST)) }
+    let(:path_pattern) { '/foo/:id' }
+    let(:methods) { %w(GET POST) }
+    subject { Matcher.new(path_pattern, methods: methods) }
     let(:match) { subject.match(request) }
 
-    context 'when no methods are specified' do
-      subject { Matcher.new('/foo') }
+    describe '#initialize' do
+      it 'sets the Matcher path_pattern and methods' do
+        expect(subject.path_pattern.to_s).to eq(path_pattern)
+        expect(subject.methods).to eq(methods)
+      end
 
-      it 'matches only GETs' do
-        expect(subject.match(req('GET', '/foo'))).to be_ok
-        expect(subject.match(req('PUT', '/foo'))).not_to be_ok
+      context 'when the methods param is missing' do
+        subject { Matcher.new('/foo') }
+
+        it 'uses only GET' do
+          expect(subject.match(req('GET', '/foo'))).to be_ok
+          expect(subject.match(req('PUT', '/foo'))).not_to be_ok
+        end
       end
     end
 

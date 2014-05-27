@@ -4,6 +4,8 @@ require 'roadie/match'
 
 module Roadie
   class Matcher
+    attr_reader :path_pattern, :methods
+
     def initialize(path_pattern, methods: ['GET'])
       @path_pattern = Mustermann.new(path_pattern)
       @methods = methods
