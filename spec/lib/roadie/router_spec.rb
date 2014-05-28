@@ -21,7 +21,7 @@ module Roadie
     describe '.build' do
       it 'creates a router using a Builder' do
         router = Router.build do
-          get :foo,  '/foo', proc { [200, {}, 'FOO'] }
+          get :foo, '/foo', proc { [200, {}, 'FOO'] }
         end
         response = router.call(req('GET', '/foo'))
         expect(response.last).to eq('FOO')
