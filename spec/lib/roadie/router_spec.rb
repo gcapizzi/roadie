@@ -43,8 +43,10 @@ module Roadie
 
         context 'when a matching route replies with X-Cascade => pass' do
           let(:ok_pass_resp) { [200, { 'X-Cascade' => 'pass' }, []] }
-          let(:passing_route) { instance_double(Route, call: ok_pass_resp) }
+          let(:passing_route) { instance_double(Route) }
           let(:routes) { [passing_route, matching_route] }
+
+          before { allow(passing_route).to receive(:call).with(env) { ok_pass_resp } }
 
           it 'keeps trying other routes' do
             expect(subject.call(env)).to eq(ok_resp)
