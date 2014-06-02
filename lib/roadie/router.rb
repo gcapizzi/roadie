@@ -28,7 +28,7 @@ module Roadie
     private
 
     def pass?(response)
-      response[1]['X-Cascade'].eql?('pass')
+      response[1].has_key?('X-Cascade')
     end
   end
 end
