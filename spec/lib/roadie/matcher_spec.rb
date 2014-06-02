@@ -7,8 +7,8 @@ module Roadie
   RSpec.describe Matcher do
     let(:path_pattern) { '/foo/:id' }
     let(:methods) { %w(GET POST) }
+
     subject { Matcher.new(path_pattern, methods) }
-    let(:match) { subject.match(request) }
 
     describe '#initialize' do
       it 'sets the Matcher path_pattern and methods' do
@@ -19,10 +19,12 @@ module Roadie
     end
 
     describe '#match' do
+      let(:match) { subject.match(request) }
+
       context 'when the request matches' do
         let(:request) { req('POST', '/foo/123') }
 
-        it 'returns a successful match with all needed params' do
+        it 'returns a successful match' do
           expect(match).to be_ok
           expect(match.params).to eq('id' => '123')
         end
@@ -47,15 +49,17 @@ module Roadie
     end
 
     describe '#expand' do
-      it 'expands the matcher URL' do
-        expect(subject.expand(id: '123')).to eq('/foo/123')
+      context 'called without params' do
+        subject { Matcher.new('/foo', %(GET)) }
+
+        it 'expands the matcher URL' do
+          expect(subject.expand).to eq('/foo')
+        end
       end
 
-      context 'when the pattern has no placeholders and params is empty' do
-        subject { Matcher.new('/foo/bar', ['GET']) }
-
-        it 'just returns the path' do
-          expect(subject.expand).to eq('/foo/bar')
+      context 'called with a params hash' do
+        it 'expands the matcher URL' do
+          expect(subject.expand(id: 123)).to eq('/foo/123')
         end
       end
     end

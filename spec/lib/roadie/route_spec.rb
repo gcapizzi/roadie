@@ -7,35 +7,38 @@ module Roadie
   RSpec.describe Route do
     let(:handler) { double(:handler) }
     let(:matcher) { instance_double(Matcher) }
-    let(:route) { Route.new(:foo, matcher, handler) }
-    let(:env) { {} }
+
+    subject { Route.new(:foo, matcher, handler) }
 
     it 'has a name' do
-      expect(route.name).to eq(:foo)
+      expect(subject.name).to eq(:foo)
     end
 
     describe '#call' do
+      let(:env) { {} }
+      let(:response) { subject.call(env) }
+
       context 'when the matcher matches' do
         let(:url_params) { { 'foo' => 'bar' } }
-        let(:matcher) { instance_double(Matcher) }
         let(:handler_env) { { 'rack.routing_args' => url_params } }
-        let(:ok_response) { [200, {}, ['ok']] }
+        let(:handler_response) { [200, {}, ['ok']] }
 
         before do
           allow(matcher).to receive(:match).with(env) { Match.ok(url_params) }
+          expect(handler).to receive(:call).with(handler_env) { handler_response }
         end
 
         it 'sets params and returns the handler response' do
-          expect(handler).to receive(:call).with(handler_env) { ok_response }
-          expect(route.call(env)).to eq(ok_response)
+          expect(response).to eq(handler_response)
         end
       end
 
       context 'when the matcher doesn\'t match' do
-        let(:matcher) { instance_double(Matcher, match: Match.fail) }
+        before do
+          allow(matcher).to receive(:match).with(env) { Match.fail }
+        end
 
         it 'returns a 404 Not Found with X-Cascade => pass' do
-          response = route.call(env)
           expect(response[0].to_i).to eq(404)
           expect(response[1]['X-Cascade']).to eq('pass')
         end
@@ -43,14 +46,20 @@ module Roadie
     end
 
     describe '#expand_url' do
-      before do
-        allow(matcher).to receive(:expand).with({}) { '/foo' }
-        allow(matcher).to receive(:expand).with(id: '123') { '/foo/123' }
+      context 'called without params' do
+        before { allow(matcher).to receive(:expand).with({}) { '/foo' } }
+
+        it 'expands the route URL' do
+          expect(subject.expand_url).to eq('/foo')
+        end
       end
 
-      it 'expands the route URL' do
-        expect(route.expand_url).to eq('/foo')
-        expect(route.expand_url(id: '123')).to eq('/foo/123')
+      context 'called with a params hash' do
+        before { allow(matcher).to receive(:expand).with(id: '123') { '/foo/123' } }
+
+        it 'expands the route URL' do
+          expect(subject.expand_url(id: '123')).to eq('/foo/123')
+        end
       end
     end
   end
