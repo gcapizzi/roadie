@@ -31,11 +31,8 @@ module Roadie
       end
 
       context 'when a route matches' do
-        let(:other_matching_route) { instance_double(Route) }
-        let(:routes) { [not_matching_route,
-                        matching_route,
-                        not_matching_route,
-                        other_matching_route] }
+        let(:other_route) { instance_double(Route) }
+        let(:routes) { [not_matching_route, matching_route, not_matching_route, other_route] }
 
         it 'stops trying and returns the route response' do
           expect(response).to eq(ok_response)
@@ -85,9 +82,8 @@ module Roadie
 
     describe '#url_for' do
       let(:route) { instance_double(Route, name: 'foo') }
-      let(:routes) { [instance_double(Route, name: 'first'),
-                      route,
-                      instance_double(Route, name: 'last')] }
+      let(:another_route) { instance_double(Route, name: 'bar') }
+      let(:routes) { [another_route, route, another_route] }
 
       context 'called without a params hash' do
         before { allow(route).to receive(:expand_url).with({}) { '/foo' } }
