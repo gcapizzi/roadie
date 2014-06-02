@@ -30,21 +30,20 @@ module Roadie
         end
       end
 
-      shared_examples 'a match has failed' do
-        it 'returns an failed match with no params' do
-          expect(match).not_to be_ok
-          expect(match.params).to be_empty
-        end
-      end
-
       context 'when the request doesn\'t match by method' do
         let(:request) { req('PUT', '/foo/123') }
-        it_behaves_like 'a match has failed'
+
+        it 'returns an failed match' do
+          expect(match).not_to be_ok
+        end
       end
 
       context 'when the request doesn\'t match by URL' do
         let(:request) { req('GET', '/bar/123') }
-        it_behaves_like 'a match has failed'
+
+        it 'returns an failed match' do
+          expect(match).not_to be_ok
+        end
       end
     end
 

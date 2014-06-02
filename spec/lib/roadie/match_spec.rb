@@ -6,24 +6,41 @@ module Roadie
   RSpec.describe Match do
     let(:params) { { foo: 'bar' } }
 
-    describe '#initialize' do
-      it 'creates a failed match by default' do
-        expect(Match.new.ok).to be(false)
-        expect(Match.new.params).to be_empty
+    describe Match::Ok do
+      describe '#initialize' do
+        context 'when called without params' do
+          it 'leaves the match params empty' do
+            expect(subject.params).to be_empty
+          end
+        end
+
+        context 'when called with a params hash' do
+          subject { Match::Ok.new(params) }
+
+          it 'sets the match params' do
+            expect(subject.params).to eq(params)
+          end
+        end
       end
 
-      it 'sets the ok flag' do
-        expect(Match.new(true)).to be_ok
+      describe '#ok?' do
+        it 'returns true' do
+          expect(subject.ok?).to be(true)
+        end
       end
+    end
 
-      it 'sets the params' do
-        expect(Match.new(true, params).params).to eq(params)
+    describe Match::Fail do
+      describe '#ok?' do
+        it 'returns false' do
+          expect(subject.ok?).to be(false)
+        end
       end
     end
 
     describe '.ok' do
-      it 'creates a successful match' do
-        expect(Match.ok).to be_ok
+      it 'creates a Match::Ok' do
+        expect(Match.ok).to be_a(Match::Ok)
         expect(Match.ok.params).to be_empty
       end
 
@@ -33,8 +50,8 @@ module Roadie
     end
 
     describe '.fail' do
-      it 'creates a failed match' do
-        expect(Match.fail).not_to be_ok
+      it 'creates a Match::Fail' do
+        expect(Match.fail).to be_a(Match::Fail)
       end
     end
   end
