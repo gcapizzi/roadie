@@ -22,7 +22,7 @@ module Roadie
     end
 
     def url_for(route_name, params = {})
-      @routes.find { |r| r.name.eql?(route_name) }.expand_url(params)
+      @routes.find { |route| route.name.eql?(route_name) }.expand_url(params)
     end
 
     private
