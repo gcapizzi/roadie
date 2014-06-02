@@ -13,4 +13,7 @@ group :test do
   gem 'mutant'
   gem 'mutant-rspec'
   gem 'rubocop'
+  gem 'reek'
+  gem 'flog'
+  gem 'flay'
 end
