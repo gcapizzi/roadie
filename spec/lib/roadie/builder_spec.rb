@@ -18,7 +18,7 @@ module Roadie
 
         it "adds a #{method} route do the router" do
           response = router.call(req(method, '/foo'))
-          expect(response.last).to eq(method)
+          expect(response[2]).to eq(method)
         end
       end
     end
