@@ -36,6 +36,12 @@ module Roadie
           expect(subject.ok?).to be(false)
         end
       end
+
+      describe '#params' do
+        it 'returns an empty hash' do
+          expect(subject.params).to eq({})
+        end
+      end
     end
 
     describe '.ok' do

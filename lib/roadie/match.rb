@@ -24,6 +24,10 @@ module Roadie
       def ok?
         false
       end
+
+      def params
+        {}
+      end
     end
   end
 end
