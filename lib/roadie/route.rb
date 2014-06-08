@@ -16,6 +16,8 @@ module Roadie
       match = @matcher.match(env)
       if match.ok?
         env[PARAMETERS_KEY] = match.params
+        env['SCRIPT_NAME'] += env['PATH_INFO']
+        env['PATH_INFO'] = ''
         return @handler.call(env)
       end
 

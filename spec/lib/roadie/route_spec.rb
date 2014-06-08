@@ -15,12 +15,14 @@ module Roadie
     end
 
     describe '#call' do
-      let(:env) { {} }
+      let(:env) { { 'PATH_INFO' => '/foo', 'SCRIPT_NAME' => '/bar' } }
       let(:response) { subject.call(env) }
 
       context 'when the matcher matches' do
         let(:url_params) { { 'foo' => 'bar' } }
-        let(:handler_env) { { 'rack.routing_args' => url_params } }
+        let(:handler_env) { env.merge('rack.routing_args' => url_params,
+                                      'SCRIPT_NAME' => '/bar/foo',
+                                      'PATH_INFO' => '') }
         let(:handler_response) { [200, {}, ['ok']] }
 
         before do
