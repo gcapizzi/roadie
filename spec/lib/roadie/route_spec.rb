@@ -15,30 +15,30 @@ module Roadie
     end
 
     describe '#call' do
-      let(:env) { { 'PATH_INFO' => '/foo', 'SCRIPT_NAME' => '/bar' } }
+      let(:env) { { 'PATH_INFO' => '/path', 'SCRIPT_NAME' => '/prefix' } }
       let(:response) { subject.call(env) }
+
+      before { allow(matcher).to receive(:match).with(env) { match } }
 
       context 'when the matcher matches' do
         let(:url_params) { { 'foo' => 'bar' } }
-        let(:handler_env) { env.merge('rack.routing_args' => url_params,
-                                      'SCRIPT_NAME' => '/bar/foo',
-                                      'PATH_INFO' => '') }
+        let(:match) { Match.ok(url_params) }
         let(:handler_response) { [200, {}, ['ok']] }
 
-        before do
-          allow(matcher).to receive(:match).with(env) { Match.ok(url_params) }
-          expect(handler).to receive(:call).with(handler_env) { handler_response }
-        end
-
         it 'sets params and returns the handler response' do
+          expect(handler).to receive(:call) do |env|
+            expect(env).to include('rack.routing_args' => url_params)
+            expect(env).to include('SCRIPT_NAME' => '/prefix/path')
+            expect(env).to include('PATH_INFO' => '')
+
+            handler_response
+          end
           expect(response).to eq(handler_response)
         end
       end
 
       context 'when the matcher doesn\'t match' do
-        before do
-          allow(matcher).to receive(:match).with(env) { Match.fail }
-        end
+        let(:match) { Match.fail }
 
         it 'returns a 404 Not Found with X-Cascade => pass' do
           expect(response[0].to_i).to eq(404)
