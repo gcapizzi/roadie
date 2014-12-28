@@ -15,8 +15,7 @@ module Roadie
     end
 
     describe '#call' do
-      let(:env) { { 'PATH_INFO' => '/path', 'SCRIPT_NAME' => '/prefix' } }
-      let(:response) { subject.call(env) }
+      let(:env) { { 'PATH_INFO' => '/path/123', 'SCRIPT_NAME' => '/prefix' } }
 
       before { allow(matcher).to receive(:match).with(env) { match } }
 
@@ -25,14 +24,17 @@ module Roadie
         let(:match) { Match.ok(url_params) }
         let(:handler_response) { [200, {}, ['ok']] }
 
-        it 'sets params and returns the handler response' do
+        it 'calls the handler and returns its response' do
           expect(handler).to receive(:call) do |env|
             expect(env).to include('rack.routing_args' => url_params)
-            expect(env).to include('SCRIPT_NAME' => '/prefix/path')
+            expect(env).to include('SCRIPT_NAME' => '/prefix/path/123')
             expect(env).to include('PATH_INFO' => '')
 
             handler_response
           end
+
+          response = subject.call(env)
+
           expect(response).to eq(handler_response)
         end
       end
@@ -41,6 +43,8 @@ module Roadie
         let(:match) { Match.fail }
 
         it 'returns a 404 Not Found with X-Cascade => pass' do
+          response = subject.call(env)
+
           expect(response[0].to_i).to eq(404)
           expect(response[1]['X-Cascade']).to eq('pass')
         end
