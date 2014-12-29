@@ -1,5 +1,5 @@
 language: ruby
-bundler_args: --without guard guard-rspec mutant mutant-rspec rubocop
+bundler_args: --without guard guard-rspec mutant mutant-rspec development
 rvm:
   - 2.1.5
   - 2.2.0
