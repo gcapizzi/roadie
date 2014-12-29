@@ -11,8 +11,12 @@ group :test do
   gem 'guard-rspec'
   gem 'mutant'
   gem 'mutant-rspec'
+end
+
+group :development do
   gem 'rubocop'
   gem 'reek'
   gem 'flog'
+  gem 'ruby2ruby'
   gem 'flay'
 end
