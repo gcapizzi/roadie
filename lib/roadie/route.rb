@@ -16,10 +16,9 @@ module Roadie
     def call(env)
       match = @matcher.match(env)
       if match.ok?
-        env[PARAMETERS_KEY] = match.params
-        env['SCRIPT_NAME'] += env['PATH_INFO']
-        env['PATH_INFO'] = ''
-        @handler.call(env)
+        @handler.call(PARAMETERS_KEY => match.params,
+                      'SCRIPT_NAME' => env['SCRIPT_NAME'] + env['PATH_INFO'],
+                      'PATH_INFO' => '')
       else
         @next_route.call(env)
       end
