@@ -3,7 +3,7 @@ require 'roadie/builder'
 
 module Roadie
   class Router
-    def initialize(routes, default_route = proc { NOT_FOUND })
+    def initialize(routes, default_route = PassRoute.new)
       @routes = routes
       @default_route = default_route
     end
@@ -27,7 +27,7 @@ module Roadie
         return expanded_url unless expanded_url.nil?
       end
 
-      nil
+      @default_route.expand_url(route_name, params)
     end
 
     private
