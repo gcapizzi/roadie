@@ -86,8 +86,7 @@ module Roadie
       let(:new_next_route) { instance_double(Route) }
 
       it 'sets the next route' do
-        subject << new_next_route
-
+        expect(subject << new_next_route).to eq(subject)
         expect(subject.next_route).to eq(new_next_route)
       end
     end

@@ -35,6 +35,7 @@ module Roadie
 
     def <<(next_route)
       @next_route = next_route
+      self
     end
   end
 end
