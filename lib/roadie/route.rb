@@ -19,18 +19,18 @@ module Roadie
         env[PARAMETERS_KEY] = match.params
         env['SCRIPT_NAME'] += env['PATH_INFO']
         env['PATH_INFO'] = ''
-        return @handler.call(env)
+        @handler.call(env)
+      else
+        @next_route.call(env)
       end
-
-      @next_route.call(env)
     end
 
     def expand_url(name, params = {})
       if name.eql?(@name)
         return @matcher.expand(params)
+      else
+        @next_route.expand_url(name, params)
       end
-
-      @next_route.expand_url(name, params)
     end
 
     def <<(next_route)
