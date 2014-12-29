@@ -1,16 +1,6 @@
+require 'roadie/pass_route'
+
 module Roadie
-  NOT_FOUND = [404, { 'Content-Type' => 'text/plain', 'X-Cascade' => 'pass' }, ['Not Found']]
-
-  class PassRoute
-    def call(_)
-      NOT_FOUND
-    end
-
-    def expand_url(_, _)
-      nil
-    end
-  end
-
   class Route
     attr_reader :name
 
