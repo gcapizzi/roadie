@@ -8,10 +8,10 @@ module Roadie
     let(:handler) { double(:handler) }
     let(:matcher) { instance_double(Matcher) }
 
-    subject { Route.new(:foo, matcher, handler) }
+    subject { Route.new('foo', matcher, handler) }
 
     it 'has a name' do
-      expect(subject.name).to eq(:foo)
+      expect(subject.name).to eq('foo')
     end
 
     describe '#call' do
@@ -52,19 +52,27 @@ module Roadie
     end
 
     describe '#expand_url' do
-      context 'called without params' do
-        before { allow(matcher).to receive(:expand).with({}) { '/foo' } }
+      context 'when called with the right name' do
+        context 'and no params' do
+          before { allow(matcher).to receive(:expand).with({}) { '/foo' } }
 
-        it 'expands the route URL' do
-          expect(subject.expand_url).to eq('/foo')
+          it 'expands the route URL' do
+            expect(subject.expand_url('foo')).to eq('/foo')
+          end
+        end
+
+        context 'and a params hash' do
+          before { allow(matcher).to receive(:expand).with(id: '123') { '/foo/123' } }
+
+          it 'expands the route URL with the provided params' do
+            expect(subject.expand_url('foo', id: '123')).to eq('/foo/123')
+          end
         end
       end
 
-      context 'called with a params hash' do
-        before { allow(matcher).to receive(:expand).with(id: '123') { '/foo/123' } }
-
-        it 'expands the route URL' do
-          expect(subject.expand_url(id: '123')).to eq('/foo/123')
+      context 'when called with the wrong name' do
+        it 'returns nil' do
+          expect(subject.expand_url('bar', id: '123')).to be(nil)
         end
       end
     end

@@ -21,8 +21,13 @@ module Roadie
       @default_route.call(env)
     end
 
-    def url_for(route_name, params = {})
-      @routes.find { |route| route.name.eql?(route_name) }.expand_url(params)
+    def expand_url(route_name, params = {})
+      @routes.each do |route|
+        expanded_url = route.expand_url(route_name, params)
+        return expanded_url unless expanded_url.nil?
+      end
+
+      nil
     end
 
     private

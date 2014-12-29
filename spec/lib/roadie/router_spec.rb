@@ -80,24 +80,36 @@ module Roadie
       end
     end
 
-    describe '#url_for' do
-      let(:route) { instance_double(Route, name: 'foo') }
-      let(:another_route) { instance_double(Route, name: 'bar') }
+    describe '#expand_url' do
+      let(:route) { instance_double(Route) }
+      let(:another_route) { instance_double(Route) }
       let(:routes) { [another_route, route, another_route] }
 
-      context 'called without a params hash' do
-        before { allow(route).to receive(:expand_url).with({}) { '/foo' } }
+      before { allow(another_route).to receive(:expand_url) { nil } }
 
-        it 'expands a route URL' do
-          expect(subject.url_for('foo')).to eq('/foo')
+      context 'when a matching route exists' do
+        context 'called without a params hash' do
+          before { allow(route).to receive(:expand_url).with('foo', {}) { '/foo' } }
+
+          it 'delegates to the matching route' do
+            expect(subject.expand_url('foo')).to eq('/foo')
+          end
+        end
+
+        context 'called with a params hash' do
+          before { allow(route).to receive(:expand_url).with('foo', id: '123') { '/foo/123' } }
+
+          it 'delegates to the matching route, passing on the params' do
+            expect(subject.expand_url('foo', id: '123')).to eq('/foo/123')
+          end
         end
       end
 
-      context 'called with a params hash' do
-        before { allow(route).to receive(:expand_url).with(id: '123') { '/foo/123' } }
+      context 'when no matching routes exist' do
+        before { allow(route).to receive(:expand_url).with('foo', {}) { nil } }
 
-        it 'expands a route URL' do
-          expect(subject.url_for('foo', id: '123')).to eq('/foo/123')
+        it 'returns nil' do
+          expect(subject.expand_url('foo')).to be(nil)
         end
       end
     end

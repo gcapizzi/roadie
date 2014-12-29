@@ -24,8 +24,8 @@ module Roadie
       NOT_FOUND
     end
 
-    def expand_url(params = {})
-      @matcher.expand(params)
+    def expand_url(name, params = {})
+      @matcher.expand(params) if name.eql?(@name)
     end
   end
 end
