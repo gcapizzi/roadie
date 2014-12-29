@@ -6,7 +6,7 @@ module Roadie
 
     PARAMETERS_KEY = 'rack.routing_args'
 
-    def initialize(name, matcher, handler, next_route = PassRoute.new)
+    def initialize(name, matcher, handler, next_route)
       @name = name
       @matcher = matcher
       @handler = handler

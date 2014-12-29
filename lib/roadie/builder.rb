@@ -9,13 +9,14 @@ module Roadie
     end
 
     methods = %w(GET POST PUT PATCH DELETE HEAD OPTIONS LINK UNLINK)
+    pass_route = PassRoute.new
 
     methods.each do |method|
       method_name = method.downcase
 
       define_method(method_name) do |name, path, handler = nil, &block|
         matcher = Matcher.new(path, [method])
-        route = Route.new(name, matcher, handler || block)
+        route = Route.new(name, matcher, handler || block, pass_route)
 
         @root ||= route
         @last_route << route if @last_route

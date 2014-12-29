@@ -7,8 +7,9 @@ module Roadie
   RSpec.describe Route do
     let(:handler) { double(:handler) }
     let(:matcher) { instance_double(Matcher) }
+    let(:next_route) { instance_double(Route) }
 
-    subject { Route.new('foo', matcher, handler) }
+    subject { Route.new('foo', matcher, handler, next_route) }
 
     it 'has a name' do
       expect(subject.name).to eq('foo')
@@ -41,27 +42,14 @@ module Roadie
 
       context 'when the matcher doesn\'t match' do
         let(:match) { Match.fail }
+        let(:next_response) { [200, {}, 'next'] }
 
-        it 'returns a 404 Not Found with X-Cascade => pass' do
+        before { expect(next_route).to receive(:call).with(env) { next_response } }
+
+        it 'delegates to the next route' do
           response = subject.call(env)
 
-          expect(response[0].to_i).to eq(404)
-          expect(response[1]['X-Cascade']).to eq('pass')
-        end
-
-        context 'when it has a next route' do
-          let(:next_route) { instance_double(Route) }
-          let(:next_response) { [200, {}, 'next'] }
-
-          subject { Route.new('foo', matcher, handler, next_route) }
-
-          before { expect(next_route).to receive(:call).with(env) { next_response } }
-
-          it 'delegates to it' do
-            response = subject.call(env)
-
-            expect(response).to eq(next_response)
-          end
+          expect(response).to eq(next_response)
         end
       end
     end
@@ -86,31 +74,21 @@ module Roadie
       end
 
       context 'when called with the wrong name' do
-        it 'returns nil' do
-          expect(subject.expand_url('bar', id: '123')).to be(nil)
-        end
+        before { allow(next_route).to receive(:expand_url).with('bar', {}) { '/bar' } }
 
-        context 'when it has a next route' do
-          let(:next_route) { instance_double(Route) }
-
-          subject { Route.new('foo', matcher, handler, next_route) }
-
-          before { allow(next_route).to receive(:expand_url).with('bar', {}) { '/bar' } }
-
-          it 'delegates to it' do
-            expect(subject.expand_url('bar')).to eq('/bar')
-          end
+        it 'delegates to the next route' do
+          expect(subject.expand_url('bar')).to eq('/bar')
         end
       end
     end
 
     describe '#<<' do
-      let(:next_route) { instance_double(Route) }
+      let(:new_next_route) { instance_double(Route) }
 
       it 'sets the next route' do
-        subject << next_route
+        subject << new_next_route
 
-        expect(subject.next_route).to eq(next_route)
+        expect(subject.next_route).to eq(new_next_route)
       end
     end
   end
