@@ -6,7 +6,7 @@ gem 'mustermann'
 group :test do
   gem 'rake'
   gem 'rack-test', require: 'rack/test'
-  gem 'rspec', '~> 3.0.0.rc'
+  gem 'rspec'
   gem 'guard'
   gem 'guard-rspec'
   gem 'simplecov'
