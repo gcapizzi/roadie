@@ -55,7 +55,7 @@ module Roadie
 
           subject { Route.new('foo', matcher, handler, next_route) }
 
-          before { expect(next_route).to receive(:call) { next_response } }
+          before { expect(next_route).to receive(:call).with(env) { next_response } }
 
           it 'delegates to it' do
             response = subject.call(env)
