@@ -2,7 +2,7 @@ require 'roadie/pass_route'
 
 module Roadie
   class Route
-    attr_reader :name
+    attr_reader :name, :next_route
 
     PARAMETERS_KEY = 'rack.routing_args'
 
@@ -31,6 +31,10 @@ module Roadie
       end
 
       @next_route.expand_url(name, params)
+    end
+
+    def <<(next_route)
+      @next_route = next_route
     end
   end
 end

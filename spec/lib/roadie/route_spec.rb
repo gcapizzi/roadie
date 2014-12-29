@@ -103,5 +103,15 @@ module Roadie
         end
       end
     end
+
+    describe '#<<' do
+      let(:next_route) { instance_double(Route) }
+
+      it 'sets the next route' do
+        subject << next_route
+
+        expect(subject.next_route).to eq(next_route)
+      end
+    end
   end
 end
