@@ -9,7 +9,6 @@ group :test do
   gem 'rspec'
   gem 'guard'
   gem 'guard-rspec'
-  gem 'simplecov'
   gem 'mutant'
   gem 'mutant-rspec'
   gem 'rubocop'

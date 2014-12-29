@@ -9,11 +9,6 @@ RSpec.configure do |config|
   end
 end
 
-# Setup SimpleCov
-
-require 'simplecov'
-SimpleCov.start if ENV['COVERAGE']
-
 # Helpers
 
 def req(method, path)

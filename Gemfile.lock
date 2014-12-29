@@ -19,7 +19,6 @@ GEM
       adamantium (~> 0.2.0)
       equalizer (~> 0.0.9)
     diff-lcs (1.2.5)
-    docile (1.1.5)
     equalizer (0.0.9)
     ffi (1.9.6)
     flay (2.5.0)
@@ -61,7 +60,6 @@ GEM
       equalizer (~> 0.0.9)
       ice_nine (~> 0.11.0)
       procto (~> 0.0.2)
-    multi_json (1.10.1)
     mustermann (0.4.0)
       tool (~> 0.2)
     mutant (0.7.4)
@@ -127,11 +125,6 @@ GEM
     ruby_parser (3.6.3)
       sexp_processor (~> 4.1)
     sexp_processor (4.4.4)
-    simplecov (0.9.1)
-      docile (~> 1.1.0)
-      multi_json (~> 1.0)
-      simplecov-html (~> 0.8.0)
-    simplecov-html (0.8.0)
     slop (3.6.0)
     thor (0.19.1)
     thread_safe (0.3.4)
@@ -163,4 +156,3 @@ DEPENDENCIES
   reek
   rspec
   rubocop
-  simplecov
