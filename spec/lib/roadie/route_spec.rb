@@ -48,6 +48,21 @@ module Roadie
           expect(response[0].to_i).to eq(404)
           expect(response[1]['X-Cascade']).to eq('pass')
         end
+
+        context 'when it has a next route' do
+          let(:next_route) { instance_double(Route) }
+          let(:next_response) { [200, {}, 'next'] }
+
+          subject { Route.new('foo', matcher, handler, next_route) }
+
+          before { expect(next_route).to receive(:call) { next_response } }
+
+          it 'delegates to it' do
+            response = subject.call(env)
+
+            expect(response).to eq(next_response)
+          end
+        end
       end
     end
 
@@ -73,6 +88,18 @@ module Roadie
       context 'when called with the wrong name' do
         it 'returns nil' do
           expect(subject.expand_url('bar', id: '123')).to be(nil)
+        end
+
+        context 'when it has a next route' do
+          let(:next_route) { instance_double(Route) }
+
+          subject { Route.new('foo', matcher, handler, next_route) }
+
+          before { allow(next_route).to receive(:expand_url).with('bar', {}) { '/bar' } }
+
+          it 'delegates to it' do
+            expect(subject.expand_url('bar')).to eq('/bar')
+          end
         end
       end
     end
