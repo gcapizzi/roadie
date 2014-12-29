@@ -21,6 +21,7 @@ module Roadie
           response = app.call(req(method, '/foo'))
           expect(response[2].first).to eq(method)
         end
+        expect(app.call(req('GET', '/bar'))[0]).to eq(404)
       end
     end
   end

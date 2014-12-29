@@ -19,7 +19,7 @@ module Roadie
       end
     end
 
-    def expand(params = {})
+    def expand(params = nil)
       @path_pattern.expand(params)
     end
 

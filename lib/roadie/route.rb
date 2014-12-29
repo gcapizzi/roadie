@@ -27,7 +27,7 @@ module Roadie
 
     def expand_url(name, params = {})
       if name.eql?(@name)
-        return @matcher.expand(params)
+        @matcher.expand(params)
       else
         @next_route.expand_url(name, params)
       end
