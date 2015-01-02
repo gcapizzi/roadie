@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'json'
 gem 'mustermann'
 
 group :test do
