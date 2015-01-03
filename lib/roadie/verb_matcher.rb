@@ -14,7 +14,7 @@ module Roadie
       end
     end
 
-    def expand(_ = nil);
+    def expand(_ = nil)
       ''
     end
   end

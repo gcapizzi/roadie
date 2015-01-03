@@ -8,17 +8,13 @@ RSpec.describe Roadie do
 
   let(:app) do
     Roadie.build do
-      get :foo, '/foo' do
-        [200, {}, ['foo']]
-      end
+      on [get, path('/foo')], :foo, proc { [200, {}, ['foo']] }
 
-      post :bar, '/bar/*'  do
-        [200, {}, ['bar']]
-      end
+      on [post, path('/bar/*')], :bar, proc { [200, {}, ['bar']] }
 
-      put :resource, '/resource/:id' do |env|
+      on [put, path('/resource/:id')], :resource, lambda { |env|
         [200, {}, [env['rack.routing_args']['id']]]
-      end
+      }
     end
   end
 
