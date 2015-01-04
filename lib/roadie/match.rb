@@ -18,6 +18,13 @@ module Roadie
       def ok?
         true
       end
+
+      def &(other)
+        case other
+        when Ok then Ok.new(@params.merge(other.params))
+        else Fail.new
+        end
+      end
     end
 
     class Fail
@@ -27,6 +34,10 @@ module Roadie
 
       def params
         {}
+      end
+
+      def &(_)
+        self
       end
     end
   end

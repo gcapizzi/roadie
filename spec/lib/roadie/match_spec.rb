@@ -4,7 +4,7 @@ require 'roadie/match'
 
 module Roadie
   RSpec.describe Match do
-    let(:params) { { foo: 'bar' } }
+    let(:params) { { foo: 'foo', bar: 'bar' } }
 
     describe Match::Ok do
       describe '#initialize' do
@@ -28,6 +28,31 @@ module Roadie
           expect(subject.ok?).to be(true)
         end
       end
+
+      describe '#&' do
+        subject { Match::Ok.new(params) }
+
+        context 'with a Match::Ok' do
+          let(:other) { Match::Ok.new(bar: 123, baz: 'baz') }
+
+          it 'returns a Match::Ok with merged params' do
+            result = subject & other
+
+            expect(result.ok?).to be(true)
+            expect(result.params).to eq(foo: 'foo', bar: 123, baz: 'baz')
+          end
+        end
+
+        context 'with a Match::Fail' do
+          let(:other) { Match::Fail.new }
+
+          it 'returns a Match::Fail' do
+            result = subject & other
+
+            expect(result.ok?).to be(false)
+          end
+        end
+      end
     end
 
     describe Match::Fail do
@@ -40,6 +65,13 @@ module Roadie
       describe '#params' do
         it 'returns an empty hash' do
           expect(subject.params).to eq({})
+        end
+      end
+
+      describe '#&' do
+        it 'always returns a Match::Fail' do
+          expect((subject & Match::Ok.new).ok?).to be(false)
+          expect((subject & Match::Fail.new).ok?).to be(false)
         end
       end
     end
