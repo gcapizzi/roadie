@@ -1,28 +1,17 @@
 require 'spec_helper'
 require 'rack'
 
-require 'roadie/matcher'
+require 'roadie/path_matcher'
 
 module Roadie
-  RSpec.describe Matcher do
-    let(:path_pattern) { '/foo/:id' }
-    let(:methods) { %w(GET POST) }
-
-    subject { Matcher.new(path_pattern, methods) }
-
-    describe '#initialize' do
-      it 'sets the Matcher path_pattern and methods' do
-        expect(subject.path_pattern).to be_a(Mustermann::Pattern)
-        expect(subject.path_pattern.to_s).to eq(path_pattern)
-        expect(subject.methods).to eq(methods)
-      end
-    end
+  RSpec.describe PathMatcher do
+    subject { PathMatcher.new('/foo/:id') }
 
     describe '#match' do
       let(:match) { subject.match(request) }
 
       context 'when the request matches' do
-        let(:request) { req('POST', '/foo/123') }
+        let(:request) { req('GET', '/foo/123') }
 
         it 'returns a successful match' do
           expect(match).to be_ok
@@ -30,15 +19,7 @@ module Roadie
         end
       end
 
-      context 'when the request doesn\'t match by method' do
-        let(:request) { req('PUT', '/foo/123') }
-
-        it 'returns an failed match' do
-          expect(match).not_to be_ok
-        end
-      end
-
-      context 'when the request doesn\'t match by URL' do
+      context 'when the request doesn\'t match' do
         let(:request) { req('GET', '/bar/123') }
 
         it 'returns an failed match' do
@@ -49,7 +30,7 @@ module Roadie
 
     describe '#expand' do
       context 'called without params' do
-        subject { Matcher.new('/foo', %(GET)) }
+        subject { PathMatcher.new('/foo') }
 
         it 'expands the matcher URL' do
           expect(subject.expand).to eq('/foo')

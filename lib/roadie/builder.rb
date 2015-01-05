@@ -1,5 +1,5 @@
 require 'roadie/route'
-require 'roadie/matcher'
+require 'roadie/composite_matcher'
 
 module Roadie
   class Builder
@@ -15,10 +15,10 @@ module Roadie
     methods = %w(GET POST PUT PATCH DELETE HEAD OPTIONS LINK UNLINK)
 
     methods.each do |method|
-      method_name = method.downcase
-
-      define_method(method_name) do |name, path, handler = nil, &block|
-        matcher = Matcher.new(path, [method])
+      define_method(method.downcase) do |name, path, handler = nil, &block|
+        verb_matcher = VerbMatcher.new(method)
+        path_matcher = PathMatcher.new(path)
+        matcher = CompositeMatcher.new([verb_matcher, path_matcher])
         route = Route.new(name, matcher, handler || block, nil)
         @routes.unshift(route)
       end

@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 require 'roadie/route'
-require 'roadie/matcher'
+require 'roadie/composite_matcher'
 
 module Roadie
   RSpec.describe Route do
     let(:handler) { double(:handler) }
-    let(:matcher) { instance_double(Matcher) }
+    let(:matcher) { instance_double(CompositeMatcher) }
     let(:next_route) { instance_double(Route) }
 
     subject { Route.new('foo', matcher, handler, next_route) }
